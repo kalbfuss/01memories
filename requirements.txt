@@ -1,0 +1,12 @@
+# pip requirements file
+exifread
+ffmpeg-python
+geopy
+IPTCInfo3
+Kivy
+paho-mqtt
+rclone-python
+schedule
+SQLAlchemy
+webdavclient3
+yaml
