@@ -1,24 +1,24 @@
-# Pyframe #
+# Digital Memories (01memories) #
 
-Pyframe is a Python-based digital photo frame application. It is capable of displaying photos and playing videos from local storage as well as WebDAV and [rclone](https://rclone.org) repositories.
+Digital Memories is a Python-based digital photo frame application. It is capable of displaying photos and playing videos from local storage as well as WebDAV and [rclone](https://rclone.org) repositories.
 
-Pyframe has been designed to run slideshows from image and video repositories with several thousand files. No conversion is required. Files remain in your repositories and fully under your control.
+Digital Memories has been designed to run slideshows from image and video repositories with several thousand files. No conversion is required. Files remain in your repositories and fully under your control.
 
 Files in slideshows can be dynamically arranged and filtered based on their metadata (EXIF and IPTC metadata supported). Slideshows can be run continuously or scheduled.
 
-Pyframe supports reverse geocoding based on GPS data in the EXIF tag, using the geopy library and Photon geocoder (essentially OpenStreetMap).
+Digital Memories supports reverse geocoding based on GPS data in the EXIF tag, using the geopy library and Photon geocoder (essentially OpenStreetMap).
 
-Pyframe optionally integrates with [Home Assistant](https://www.home-assistant.io/) via [MQTT](https://mqtt.org). Integration allows the display to be motion activated after coupling of the Pyframe device with a motion sensor.
+Digital Memories optionally integrates with [Home Assistant](https://www.home-assistant.io/) via [MQTT](https://mqtt.org). Integration allows the display to be motion activated after coupling of the Digital Memories device with a motion sensor.
 
-Pyframe is being developed by [Bernd Kalbfuss (aka langweiler)](https://github.com/kalbfuss) and is published under the [General Public License version 3](LICENSE.md). The latest source code is available on [GitHub](https://github.com/kalbfuss/pyframe).
+Digital Memories is being developed by [Bernd Kalbfuss (aka langweiler)](https://github.com/kalbfuss) and is published under the [General Public License version 3](LICENSE.md). The latest source code is available on [GitHub](https://github.com/kalbfuss/01memories).
 
 Instructions for building your own digital photo frame can be found [here](FRAME.md).
 
 ## Dependencies ##
 
-Pyframe requires [Python 3](https://python.org) to run. It has been developed with Python version 3.10 on Ubuntu Linux, but may run with earlier versions and on different operating systems.
+Digital Memories requires [Python 3](https://python.org) to run. It has been developed with Python version 3.10 on Ubuntu Linux, but may run with earlier versions and on different operating systems.
 
-Pyframe requires the following Python packages to be installed:
+Digital Memories requires the following Python packages to be installed:
 
 - exifread
 - ffmpeg-python
@@ -34,7 +34,7 @@ Pyframe requires the following Python packages to be installed:
 
 All packages are available on [pypi.org](https://pypi.org) and can be installed using the "pip install" (or "pip3 install") command. Where possible/available, packages should be installed using the distribution package manager (e.g  "apt" on Debian/Ubuntu).
 
-Pyframe further requires the following (non-Python) libraries to be installed:
+Digital Memories further requires the following (non-Python) libraries to be installed:
 
 - libxslt1.1
 - libmtdev1
@@ -44,17 +44,17 @@ Pyframe further requires the following (non-Python) libraries to be installed:
 
 Libraries should be installed using the distribution package manager.
 
-Note that Pyframe requires the X windows system and a desktop environment to be installed. Pyframe will in principle also run under Wayland, but the display will not be turned off automatically since Wayland does fully implement the "xset" command.
+Note that Digital Memories requires the X windows system and a desktop environment to be installed. Digital Memories will in principle also run under Wayland, but the display will not be turned off automatically since Wayland does fully implement the "xset" command.
 
 ## Installation
 
-Pyframe is still in early development. The easiest way to install the latest version is to clone the GitHub repository using the *git* client. After having installed the *git* client, installation of Pyframe becomes as simple as:
+Digital Memories is still in early development. The easiest way to install the latest version is to clone the GitHub repository using the *git* client. After having installed the *git* client, installation of Digital Memories becomes as simple as:
 
 ```bash
-$ git clone git@github.com:kalbfuss/pyframe.git
+$ git clone git@github.com:kalbfuss/01memories.git
 ```
 
-The command installs the Pyframe sources in the sub-directory "pyframe" within the current working directory. Pyframe can be updated to the latest version by changing into the "pyframe" directory and issuing the following command:
+The command installs the Digital Memories sources in the sub-directory "pyframe" within the current working directory. Digital Memories can be updated to the latest version by changing into the "pyframe" directory and issuing the following command:
 
 ```bash
 $ cd pyframe
@@ -65,9 +65,9 @@ At this stage of the project you should not expect the configuration syntax to b
 
 ## Configuration
 
-The Pyframe application is configured via a single YAML configuration file. The file is named "config.yaml" and must be stored in the current (working) directory. The following sections provide examples for configuration and the documentation of all parameters.
+The Digital Memories application is configured via a single YAML configuration file. The file is named "config.yaml" and must be stored in the current (working) directory. The following sections provide examples for configuration and the documentation of all parameters.
 
-A lot of effort has gone into configuration checks. The application should warn you in the event of invalid configurations immediately after startup. It is thus safe to explore the various configuration options. Under no circumstances is Pyframe going to modify any of your image or video files.
+A lot of effort has gone into configuration checks. The application should warn you in the event of invalid configurations immediately after startup. It is thus safe to explore the various configuration options. Under no circumstances is Digital Memories going to modify any of your image or video files.
 
 ### Examples
 
@@ -181,7 +181,7 @@ mqtt:
   host: mqtt.local
   user: pyframe
   password: <my password>
-  device_name: My pyframe somwhere in the house
+  device_name: My Digital Memories somwhere in the house
 ```
 
 ### Application
@@ -213,7 +213,7 @@ Parameters in this section will likely not have to be modified by the majority o
 
 ### Repositories
 
-Pyframe supports the configuration of one or multiple file repositories. Repositories are configured in the *repositories* section of the configuration file. The section is required and must contain at least a single, valid repository definition. Repository parameter defaults may be provided as global parameters.  The example below provides a typical *repositories* configuration section.
+Digital Memories supports the configuration of one or multiple file repositories. Repositories are configured in the *repositories* section of the configuration file. The section is required and must contain at least a single, valid repository definition. Repository parameter defaults may be provided as global parameters.  The example below provides a typical *repositories* configuration section.
 
 ```yaml
 ...
@@ -261,7 +261,7 @@ Only a single parameter is required for the definition of local repositories.
 
 #### Rclone repositories
 
-Like for local repositories, only a single parameter is required for the definition of rclone repositories. However, the rclone remote must have been configured before. Pyframe currently does not provide any functionality to configure rclone remotes.
+Like for local repositories, only a single parameter is required for the definition of rclone repositories. However, the rclone remote must have been configured before. Digital Memories currently does not provide any functionality to configure rclone remotes.
 
 | Parameter | Description                                                  |
 | :-------- | :----------------------------------------------------------- |
@@ -280,7 +280,7 @@ As a minimum, the parameters *url*, *user* and *password* need to be specified f
 
 ### Slideshows
 
-Pyframe supports the configuration of one or multiple slideshows. Slideshows are configured in the *slideshows* section of the configuration file. The section is required and must contain at least a single, valid slideshow definition. The first slideshow is the default slideshow. Slideshow parameter defaults may be provided as global parameters. The example below provides a typical *slideshows* configuration section.
+Digital Memories supports the configuration of one or multiple slideshows. Slideshows are configured in the *slideshows* section of the configuration file. The section is required and must contain at least a single, valid slideshow definition. The first slideshow is the default slideshow. Slideshow parameter defaults may be provided as global parameters. The example below provides a typical *slideshows* configuration section.
 
 ```yaml
 ...
@@ -348,7 +348,7 @@ The following parameters control the files included in a slideshow and the seque
 
 ### Schedule
 
-Pyframe supports the configuration of a schedule. The schedule allows to alter the application behavior at predefined points in time. The schedule is configured in the optional *schedule* section of the configuration file. The schedule may contain one or multiple events. The schedule is disabled if the configuration section is missing. The example below provides a typical *schedule* configuration section.
+Digital Memories supports the configuration of a schedule. The schedule allows to alter the application behavior at predefined points in time. The schedule is configured in the optional *schedule* section of the configuration file. The schedule may contain one or multiple events. The schedule is disabled if the configuration section is missing. The example below provides a typical *schedule* configuration section.
 
 ```yaml
 schedule:
@@ -386,7 +386,7 @@ The following parameters are used to configure events in the schedule.
 
 ### MQTT
 
-Pyframe implements an MQTT client, which registers the device with an MQTT broker. The MQTT configuration is provided in the optional *mqtt* section of the configuration file. MQTT support is disabled if the configuration section is missing. The example below provides a typical *mqtt* configuration section.
+Digital Memories implements an MQTT client, which registers the device with an MQTT broker. The MQTT configuration is provided in the optional *mqtt* section of the configuration file. MQTT support is disabled if the configuration section is missing. The example below provides a typical *mqtt* configuration section.
 
 ```yaml
 ...
@@ -394,7 +394,7 @@ mqtt:
   host: <hostname of MQTT broker>
   user: <login name>
   password: <my password>
-  device_name: My pyframe somwhere in the house
+  device_name: My Digital Memories somwhere in the house
 ...
 ```
 
@@ -408,20 +408,20 @@ The following parameters are used to configure the MQTT client.
 | tls_insecure | The following values are supported. The default is *false*.<br/> - *true*: Insecure TLS connections with non-trusted certificates are permitted.<br/> - *false*: Only secure connections with trusted certificates are permitted.|
 | user         | Login name. A value must be provided.|
 | password     | Login password. A value must be provided.|
-| device_id    | The Pyframe device ID. The default is "pyframe". **Note** The device ID must be unique. A different value must be specified if multiple Pyframe instances connect to the same broker. |
+| device_id    | The Digital Memories device ID. The default is "pyframe". **Note** The device ID must be unique. A different value must be specified if multiple Pyframe instances connect to the same broker. |
 | device_name  | The human friendly device name. The default is  to use the *device_id*.|
 
 ## Running
 
-Once Pyframe has been configured, you can change into the Pyframe directory and start the application with the following command:
+Once Digital Memories has been configured, you can change into the Digital Memories directory and start the application with the following command:
 
 ```bash
 $ python3 pyframe.py
 ```
 
-In recent distributions you may have to use "python" instead of "python3". Unless configured otherwise, Pyframe is going to create an index database "index.sqlite" and directory "./log" for log files in the Pyframe directory. If WebDAV or rclone repositories are configured, Pyframe will further create a directory "./cache" for temporary storage of downloaded files.
+In recent distributions you may have to use "python" instead of "python3". Unless configured otherwise, Digital Memories is going to create an index database "index.sqlite" and directory "./log" for log files in the Digital Memories directory. If WebDAV or rclone repositories are configured, Digital Memories will further create a directory "./cache" for temporary storage of downloaded files.
 
-For convenience you can install the following script, which will allow you to start the *Pyframe* application from anywhere (even SSH sessions). The placeholders <your user> and <your pyframe directory> evidently need to be replaced with the proper values prior to running the script.
+For convenience you can install the following script, which will allow you to start the Digital Memories application from anywhere (even SSH sessions). The placeholders <your user> and <your Digital Memories directory> evidently need to be replaced with the proper values prior to running the script.
 
 **/usr/local/bin/start-pyframe**
 
@@ -447,7 +447,7 @@ else
 fi
 ```
 
-If you intend to run Pyframe as *systemd* service, you can optionally create a second script for clean up after termination. In this example, we turn off the screen (works only under X11, not Wayland).
+If you intend to run Digital Memories as *systemd* service, you can optionally create a second script for clean up after termination. In this example, we turn off the screen (works only under X11, not Wayland).
 
 **/usr/local/bin/stop-pyframe**
 
@@ -464,15 +464,15 @@ export DISPLAY=:0
 /usr/bin/xset dpms force off
 ```
 
-Both scripts should be owned by *root.root* and need to be executable (mode 750). 
+Both scripts should be owned by *root.root* and need to be executable (mode 750).
 
-If you want to start Pyframe automatically during system boot, you can do so by configuring it in your desktop session manager. Alternatively, you can register a *systemd* service via a unit file. Below is an example for a unit file, which uses the two scripts we created before.
+If you want to start Digital Memories automatically during system boot, you can do so by configuring it in your desktop session manager. Alternatively, you can register a *systemd* service via a unit file. Below is an example for a unit file, which uses the two scripts we created before.
 
 **/etc/systemd/system/pyframe.service**
 
 ```ini
 [Unit]
-Description=Pyframe digital photo frame
+Description=Digital Memories photo frame
 Wants=graphical.target
 After=graphical.target
 
@@ -488,7 +488,7 @@ Restart=always
 WantedBy=default.target
 ```
 
-The *Wants* and *After* statements make sure that we are in graphical mode and that the service is only started after the graphical system has been launched. The *ExecStop* script is optional as stated above. It is not required to stop the *Pyframe* service. The *Restart* statement ensures that Pyframe is restarted after unexpected exit. The *WantedBy* statement allows to start the service automatically at boot time.
+The *Wants* and *After* statements make sure that we are in graphical mode and that the service is only started after the graphical system has been launched. The *ExecStop* script is optional as stated above. It is not required to stop the Digital Memories service. The *Restart* statement ensures that Digital Memories is restarted after unexpected exit. The *WantedBy* statement allows to start the service automatically at boot time.
 
 Make sure the unit file belongs to *root.root*, is readable by the owner and group and writable by the owner only (mode 640). Afterwards you can start the service and verify the successful start via the following commands:
 
@@ -503,15 +503,15 @@ To enable automatic start of the service during boot time issue the following co
 $ sudo systemctl enable pyframe
 ```
 
-Make sure to additionally configure *autologin* for the user under which you intend to run Pyframe. Steps for configuration depend on the graphical system and Linux distribution. Under *Armbian* you can use the "armbian-config" tool. On *Raspberry Pi OS*, the "raspi-config" tool will do. For other systems/distributions consult the corresponding documentation.
+Make sure to additionally configure *autologin* for the user under which you intend to run Digital Memories. Steps for configuration depend on the graphical system and Linux distribution. Under *Armbian* you can use the "armbian-config" tool. On *Raspberry Pi OS*, the "raspi-config" tool will do. For other systems/distributions consult the corresponding documentation.
 
 ## Home Assistant
 
 ### General setup
 
-Pyframe implements basic support for integration with the [Home Assistant](https://www.home-assistant.io/) home automation system. Integration is achieved through the built-in Home Assistant [MQTT integration](https://www.home-assistant.io/integrations/mqtt/). As an additional pre-requisite, an MQTT broker must be installed (e.g. [Eclipse Mosquitto](https://mosquitto.org/)).
+Digital Memories implements basic support for integration with the [Home Assistant](https://www.home-assistant.io/) home automation system. Integration is achieved through the built-in Home Assistant [MQTT integration](https://www.home-assistant.io/integrations/mqtt/). As an additional pre-requisite, an MQTT broker must be installed (e.g. [Eclipse Mosquitto](https://mosquitto.org/)).
 
-After the Pyframe MQTT client has been correctly configured and a connection to the MQTT broker established, Pyframe should automatically appear as a new device in Home Assistant. The device supports several push buttons and configuration selections, which allow you to control Pyframe from remote. The device further provides a *file sensor*, whose value is identical to the UUID of the currently displayed file.
+After the Digital Memories MQTT client has been correctly configured and a connection to the MQTT broker established, Digital Memories should automatically appear as a new device in Home Assistant. The device supports several push buttons and configuration selections, which allow you to control Digital Memories from remote. The device further provides a *file sensor*, whose value is identical to the UUID of the currently displayed file.
 
 ![home assistant - device](docs/images/readme/home%20assistant%20-%20device.png)
 
@@ -521,6 +521,6 @@ In addition, the *file sensor* provides selected file metadata as sensor attribu
 
 ### Motion activation
 
-For motion activation of the display, the *touch button* of the Pyframe device needs to be coupled to a motion sensor via an automation. Every time motion is detected, the *touch button* is pressed by the automation. Pressing the touch button activates the display and resets the display timeout counter.
+For motion activation of the display, the *touch button* of the Digital Memories device needs to be coupled to a motion sensor via an automation. Every time motion is detected, the *touch button* is pressed by the automation. Pressing the touch button activates the display and resets the display timeout counter.
 
 ![home assistant - automation](docs/images/readme/home%20assistant%20-%20automation.png)
