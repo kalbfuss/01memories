@@ -1,0 +1,119 @@
+repositories:
+  Photos 1:
+    type: local
+    root: ./local/photos1
+#    enabled: true
+  Photos 2:
+    type: local
+    root: ./local/photos2
+    enabled: false
+  Frankreich:
+    type: local
+    root: ./local/frankreich
+    enabled: true
+  Videos:
+    type: local
+    root: ./local/videos
+    enabled: false
+  Formats:
+    type: local
+    root: ./local/formats
+    enabled: false
+  Tags:
+    type: local
+    root: ./local/tags
+    enabled: false
+  WebDAV Photos:
+    type: webdav
+    url: https://cloud.rueblitorte.de
+    root: /remote.php/webdav/Photos
+    user: pyframe
+    password: 61wEKZ549c74q3P6
+    enabled: false
+  SMB Photos:
+    type: local
+    root: /mnt/photos
+    enabled: false
+    index_update_at: "14:42"
+  rclone example:
+    type: rclone
+    root: "owncloud:/Photos"
+    enabled: false
+
+slideshows:
+  Show 1:
+    repositories:
+      - "Photos 1"
+      - "Frankreich"
+#      - "Videos"
+#      - "WebDAV Photos"
+#      - "Tags"
+#      - "SMB Photos"
+#      - "rclone example"
+#    tags:
+#     - Urlaub
+#    - lilith
+#    most_recent: 10
+    order: random
+    smart_limit: 5
+    direction: ascending
+#    types: images
+#    orientation: landscape
+#    excluded_tags:
+#      - Urlaub
+#      - Wasnoch
+#  Show 2:
+#    repositories:
+#      - "Photos 1"
+#      - "Videos"
+#      - "Tags"
+#    tags:
+#      - persoenlich
+#      - Sonstige
+
+schedule:
+  morning start:
+    time: "16:07"
+    slideshow: "Show 2"
+    display_mode: motion
+    display_timeout: 30
+  morning stop:
+    time: "16:08"
+    play_state: stopped
+  evening start:
+    time: "16:09"
+    slideshow: "Show 1"
+    display_mode: motion
+    display_timeout: 30
+  evening stop:
+    time: "16:10"
+    play_state: stopped
+
+mqtt:
+  host: mosquitto.valais
+  port: 8883
+  tls: true
+  user: frame1
+  password: "1N91H41PVJpSXw3g"
+  device_id: frame_dev
+  device_name: "Bilderrahmen (Entwicklung)"
+
+# Slideshow default settings
+always_excluded_tags:
+  - "360"
+#  - "persönlich"
+#  - "Sonstiges"
+log_level: debug
+bg_color: [ 0.8, 0.8, 1 ]
+#orientation: landscape
+pause: 5
+enable_exception_handler: false
+enable_mqtt: true
+enable_scheduler: false
+display_mode: static
+#display_timeout: 20
+label_content: short
+label_mode: auto
+label_duration: 2
+window_size: [ 800, 450 ]
+#window_size: full
