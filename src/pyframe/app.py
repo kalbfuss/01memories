@@ -3,6 +3,7 @@
 import copy
 import kivy.app
 import logging
+import os.path
 import repository.local
 import repository.webdav
 import subprocess
@@ -140,7 +141,7 @@ class App(kivy.app.App, Controller):
         for uuid, local_config in config['repositories'].items():
 
             # Skip disabled repositories.
-            enabled_flag = local_config.get('enabled')
+            enabled_flag = local_config.get('enabled', True)
             if enabled_flag is False or enabled_flag == "off":
                 Logger.info(f"Configuration: Skipping repository '{uuid}' as it has been disabled.")
                 continue
@@ -152,7 +153,6 @@ class App(kivy.app.App, Controller):
 
             # Check parameters.
             check_param('type', local_config, options=set(supported_types.keys()))
-            check_param('enabled', local_config, is_bool=True)
             check_param('index_update_interval', index_config, required=False, is_int=True, ge=0)
             check_param('index_update_at', index_config, required=False, is_time=True)
 
@@ -279,8 +279,19 @@ class App(kivy.app.App, Controller):
         Loads the application configuration from the default configuration file
         and applies default values where missing.
         """
+        CONF_PATHS = [
+            "./config.yaml",
+            os.path.expanduser("~/.config/01memories/config.yaml"),
+            "/etc/01memories/config.yaml",
+            f"{sys.prefix}/share/01memories/config/config.yaml"
+        ]
+
+        # Determine path of configuration file.
+        for path in CONF_PATHS:
+            if os.path.isfile(path): break
+
         # Load configuration from yaml file.
-        with open('./config.yaml', 'r') as config_file:
+        with open(path, 'r') as config_file:
             config = yaml.safe_load(config_file)
         self._config.update(config)
         Logger.debug(f"Configuration: Configuration = {self._config}")
