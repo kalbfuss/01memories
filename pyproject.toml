@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "01memories"
-version = "0.0.7"
+version = "0.0.12"
 authors = [
   { name="Bernd Kalbfuss", email="kalbfuss@gmx.net" },
 ]
@@ -28,7 +28,8 @@ dependencies = [
   "rclone-python",
   "schedule",
   "SQLAlchemy",
-  "webdavclient3"
+  "webdavclient3",
+  "xdg-base-dirs"
 ]
 
 [project.urls]
@@ -40,3 +41,8 @@ packages = [
   "src/pyframe",
   "src/repository"
 ]
+
+[tool.hatch.build.targets.wheel.shared-data]
+"config" = "share/01memories/config"
+"photos" = "share/01memories/photos"
+"doc" = "share/doc/01memories"
