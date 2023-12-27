@@ -7,8 +7,7 @@ from kivy.base import stopTouchApp
 from kivy.core.window import Window
 from kivy.logger import Logger
 
-import app
-#from .app import App
+from .app import App
 
 app = App()
 
