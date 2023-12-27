@@ -1,0 +1,81 @@
+repositories:
+  # Local repository with example photos.
+  Examples:
+    type: local
+    root: ./local/examples
+  # Local repository with our favorite photos and videos.
+#  Local storage:
+#    type: local
+#    root: ./local/photos
+  # WebDAV repository with the latest photos from our smartphone.
+#  Cloud storage:
+#    type: webdav
+#    url: https://mycloud.mydomain.org
+#    root: /remote.php/webdav/photos
+#    user: pyframe
+#    password: <my password>
+#    index_update_at: "23:00"
+  # Test repository, which has been disabled.
+#  Test repository:
+#    type: local
+#    root: ./local/test
+#    enabled: false
+
+# Repository defaults
+#index_update_interval: 24
+
+slideshows:
+  # Slideshow with example photos shown for 60 s in random sequence.
+  Examples:
+    repositories: Examples
+    pause: 60
+    sequence: random
+  # Slideshow with our favorite photos and videos.
+#  Favorites:
+#    repositories: Local storage
+#    pause: 60
+#    tags: favorites
+  # Slideshow with most recent photos from our smartphone.
+#  Recent:
+#    repositories: Cloud storage
+#    excluded_tags:
+#      - vacation
+#      - favorites
+#    file_types: images
+#    most_recent: 200
+#    order: descending
+#    sequence: date
+
+# Slideshow defaults
+#always_excluded_tags: private
+#label_content: description
+#label_mode: auto
+#label_duration: 30
+#orientation: portrait
+#pause: 180
+#rotation: -90
+
+#schedule:
+  # Play the slideshow "Recent" in the period from 8:00 to 10:00.
+#  morning start:
+#    time: "08:00"
+#    slideshow: Recent
+#    display_mode: static
+#  morning stop:
+#    time: "10:00"
+#    play_state: stopped
+  # Play the slideshow "Favorites" in the period from 18:00 to 20:00. Activate the display by motion.
+#  evening start:
+#    time: "18:00"
+#    slideshow: Favorites
+#    display_mode: motion
+#    display_timeout: 300
+#  evening stop:
+#    time: "20:00"
+#    play_state: stopped
+
+#mqtt:
+#  host: mqtt.local
+#  user: pyframe
+#  password: <my password>
+#  device_name: My pyframe somwhere in the house
