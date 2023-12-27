@@ -26,11 +26,12 @@ Digital Memories requires the following Python packages to be installed:
 - IPTCInfo3
 - Kivy
 - paho-mqtt
+- pillow
+- pyyaml
 - rclone-python
 - schedule
 - SQLAlchemy
 - webdavclient3
-- pyyaml
 
 All packages are available on [pypi.org](https://pypi.org) and can be installed using the "pip install" (or "pip3 install") command. Where possible/available, packages should be installed using the distribution package manager (e.g  "apt" on Debian/Ubuntu).
 

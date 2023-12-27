@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "01memories"
-version = "0.0.3"
+version = "0.0.7"
 authors = [
   { name="Bernd Kalbfuss", email="kalbfuss@gmx.net" },
 ]
@@ -23,11 +23,12 @@ dependencies = [
   "IPTCInfo3",
   "Kivy",
   "paho-mqtt",
+  "pillow",
+  "pyyaml",
   "rclone-python",
   "schedule",
   "SQLAlchemy",
-  "webdavclient3",
-  "yaml",
+  "webdavclient3"
 ]
 
 [project.urls]
