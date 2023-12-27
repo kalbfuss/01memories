@@ -10,7 +10,6 @@ Author: Bernd Kalbfuß
 License: t.b.d.
 """
 
-
 from .common import APPLICATION_NAME, APPLICATION_DESCRIPTION, VERSION, PROJECT_NAME
 from .mylogging import Handler
 from .indexer import Indexer
