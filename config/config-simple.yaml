@@ -9,4 +9,4 @@ slideshows:
   Examples:
     repositories: Examples
     pause: 60
-    sequence: random
+    order: random
