@@ -356,11 +356,19 @@ class App(kivy.app.App, Controller):
 
         # Configure logging.
         self.__configure_logging()
+
+        # Create index directory if it does not exist yet.
+        index_path = self._config['index']
+        index_dir = os.path.dirname(index_path)
+        try:
+            os.makedirs(index_dir, exist_ok=True)
+        except Exception as e:
+            raise Exception(f"An exception occurred while creating the index file directory '{index_dir}': {e}")
         # Create/load index.
-        os.makedirs(os.path.dirname(self._config['index']), 0o770, True) 
-        self._index = Index(self._config['index'])
+        self._index = Index(index_path)
         # Create background indexer.
         self._indexer = Indexer(self._index)
+
         # Create repositories.
         self.__create_repositories()
         # Start building index in the background.
