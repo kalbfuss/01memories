@@ -156,6 +156,12 @@ class App(kivy.app.App, Controller):
             check_param('index_update_interval', index_config, required=False, is_int=True, ge=0)
             check_param('index_update_at', index_config, required=False, is_time=True)
 
+            # Substitute patterns in root paths of local directories. The
+            # following patterns are substituted:
+            #   {sys.prefix} => sys.prefix (e.g. "/use/local")
+            if local_config.get('type') == "local":
+                local_config['root'] = local_config.get('root').replace("{sys.prefix}", sys.prefix, 1)
+
             # Retrieve repository class from type.
             ref = supported_types[local_config.get('type')]
             module = import_module(ref[0])
