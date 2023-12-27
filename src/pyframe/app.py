@@ -14,6 +14,7 @@ import yaml
 
 from importlib import import_module
 from repository import ConfigError, Index, Repository, UuidError, check_param, check_valid_required
+from xdg_base_dirs import xdg_cache_home, xdg_config_home
 
 from kivy.base import ExceptionManager
 from kivy.core.window import Window
@@ -158,7 +159,7 @@ class App(kivy.app.App, Controller):
 
             # Substitute patterns in root paths of local directories. The
             # following patterns are substituted:
-            #   {sys.prefix} => sys.prefix (e.g. "/use/local")
+            #   {sys.prefix} => sys.prefix (e.g. "/usr/local")
             if local_config.get('type') == "local":
                 local_config['root'] = local_config.get('root').replace("{sys.prefix}", sys.prefix, 1)
 
@@ -285,15 +286,15 @@ class App(kivy.app.App, Controller):
         Loads the application configuration from the default configuration file
         and applies default values where missing.
         """
-        CONF_PATHS = [
+        conf_paths = [
             "./config.yaml",
-            os.path.expanduser("~/.config/01memories/config.yaml"),
+            f"{xdg_config_home()}/01memories/config.yaml",
             "/etc/01memories/config.yaml",
             f"{sys.prefix}/share/01memories/config/config.yaml"
         ]
 
         # Determine path of configuration file.
-        for path in CONF_PATHS:
+        for path in conf_paths:
             if os.path.isfile(path): break
 
         # Load configuration from yaml file.
@@ -315,7 +316,7 @@ class App(kivy.app.App, Controller):
         'enable_logging': True,
         'enable_scheduler': True,
         'enable_mqtt': True,
-        'index': "./index.sqlite",
+        'index': f"{xdg_cache_home()}/01memories/index.sqlite",
         'index_update_interval': 0,
         'label_mode': "off",
         'label_content': "full",
@@ -323,7 +324,7 @@ class App(kivy.app.App, Controller):
         'label_font_size': 0.08,
         'label_padding': 0.03,
         'log_level': "warning",
-        'log_dir': "./log",
+        'log_dir': f"{xdg_cache_home()}/01memories/log",
         'pause': 300,
         'resize': "fill",
         'rotation': 0,
@@ -356,6 +357,7 @@ class App(kivy.app.App, Controller):
         # Configure logging.
         self.__configure_logging()
         # Create/load index.
+        os.makedirs(os.path.dirname(self._config['index']), 0o770, True) 
         self._index = Index(self._config['index'])
         # Create background indexer.
         self._indexer = Indexer(self._index)
