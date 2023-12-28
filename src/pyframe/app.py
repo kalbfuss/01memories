@@ -317,7 +317,7 @@ class App(kivy.app.App, Controller):
     # Default configuration.
     _config = {
         'bg_color': [1, 1, 1],
-        'cache': "./cache",
+        'cache': f"{xdg_cache_home()}/01memories/cache",
         'direction': "ascending",
         'display_mode': "static",
         'display_state': "on",
@@ -379,6 +379,13 @@ class App(kivy.app.App, Controller):
         self._index = Index(index_path)
         # Create background indexer.
         self._indexer = Indexer(self._index)
+
+        # Create cache directory if it does not exist yet.
+        cache_dir = self._config['cache']
+        try:
+            os.makedirs(cache_dir, exist_ok=True)
+        except Exception as e:
+            raise Exception(f"An exception occurred while creating the index file directory '{cache_dir}': {e}")
 
         # Create repositories.
         self.__create_repositories()
