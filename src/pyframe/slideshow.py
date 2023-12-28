@@ -132,7 +132,7 @@ class Slideshow(AnchorLayout):
         If the end of the iteration is reached, the iteration is restarted.
 
         :param previous: Set to True if widget for previous file shall be
-            returend.
+            returned.
         :type previous: bool
         :return: next file in the slideshow.
         :rtype: Widget
