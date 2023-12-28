@@ -242,16 +242,19 @@ class Slideshow(AnchorLayout):
             self.remove_widget(self._current_widget)
         # Make widget from next file the current widget.
         self._current_widget = self._create_next_widget(previous)
-        # Monitor memory usage.
-        self.prev_snapshot = self.cur_snapshot
-        self.cur_snapshot = tracemalloc.take_snapshot()
-        if self.prev_snapshot:
-            stats = self.cur_snapshot.compare_to(self.prev_snapshot, 'lineno')
-        else:
-            stats = self.cur_snapshot.statistics('lineno')
-        Logger.debug("Top 10 memory consumption:")
-        for stat in stats[:10]:
-            Logger.debug(f"\t{stat}")
+
+        # Monitor memory usage. Code initially inserted to investigate
+        # memory leakage problem observed with Radxa zero.
+#        self.prev_snapshot = self.cur_snapshot
+#        self.cur_snapshot = tracemalloc.take_snapshot()
+#         if self.prev_snapshot:
+#            stats = self.cur_snapshot.compare_to(self.prev_snapshot, 'lineno')
+#        else:
+#            stats = self.cur_snapshot.statistics('lineno')
+#        Logger.debug("Top 10 memory consumption:")
+#        for stat in stats[:10]:
+#            Logger.debug(f"\t{stat}")
+
         # Stop playing content in current widget if slideshow is paused.
         if self._play_state == PLAY_STATE.PAUSED:
             self._current_widget.stop()
