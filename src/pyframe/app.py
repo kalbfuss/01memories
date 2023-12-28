@@ -80,7 +80,7 @@ class App(kivy.app.App, Controller):
     """Pyframe main application."""
 
     # Required and valid configuration parameters
-    CONF_REQ_KEYS = {'display_mode', 'display_state', 'display_timeout', 'enable_exception_handler', 'enable_mqtt', 'enable_logging', 'enable_scheduler', 'index', 'log_level', 'log_dir', 'repositories', 'slideshows', 'window_size'} | Slideshow.CONF_REQ_KEYS
+    CONF_REQ_KEYS = {'display_mode', 'display_state', 'display_timeout', 'enable_exception_handler', 'enable_mqtt', 'enable_logging', 'enable_scheduler', 'index', 'log_level', 'log_dir', 'repositories', 'slideshows', 'window_position', 'window_size'} | Slideshow.CONF_REQ_KEYS
     CONF_VALID_KEYS = {'cache', 'index_update_at', 'index_update_interval', 'mqtt', 'schedule' } | CONF_REQ_KEYS | Slideshow.CONF_VALID_KEYS
 
     def __configure_logging(self):
@@ -269,6 +269,16 @@ class App(kivy.app.App, Controller):
         self.display_state = display_state
         self.display_mode = config['display_mode']
 
+        # Set window position.
+        value = config['window_position']
+        if type(value) is list and len(value) == 2 and value[0] >= 0 and value[1] >= 0:
+            Window.left = value[0]
+            Window.top = value[1]
+        elif value == "auto":
+            pass
+        else:
+            raise ConfigError(f"Configuration: Invalid value '{value}' for parameter 'window_position' specified. Valid values are [left, top] and 'auto'.", config)
+
         # Set window size.
         value = config['window_size']
         if type(value) is list and len(value) == 2 and value[0] > 0 and value[1] > 0:
@@ -331,6 +341,7 @@ class App(kivy.app.App, Controller):
         'smart_limit': 10,
         'smart_time': 24,
         'order': "name",
+        'window_position': "auto",
         'window_size': "full"
     }
 
