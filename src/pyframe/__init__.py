@@ -6,8 +6,8 @@ content. Rendering of the following content is currently supported:
 * Images via :class:`slideshow.SlideshowImage`
 * Videso via :class:`slideshow.SlideshowVideo`
 
-Author: Bernd Kalbfuß
-License: t.b.d.
+Author: Bernd Kalbfuss
+License: GNU General Public License v3 (GPLv3)
 """
 
 from .common import APPLICATION_NAME, APPLICATION_DESCRIPTION, VERSION, PROJECT_NAME

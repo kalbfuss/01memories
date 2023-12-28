@@ -1,4 +1,4 @@
-"""Pyframe main module."""
+"""pyframe main module."""
 
 import signal
 import time

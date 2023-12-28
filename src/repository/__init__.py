@@ -9,8 +9,8 @@ The following implementations, i.e. sub-packages, are currently available:
 The :class:`repository.Index` class provides functionality to index file meta
 data for the purpose of caching, filtering and sorting.
 
-Author: Bernd Kalbfuß
-License: t.b.d.
+Author: Bernd Kalbfuss
+License: GNU General Public License v3 (GPLv3)
 """
 
 from .common import ConfigError, UuidError, IoError, check_valid_required, check_param

@@ -7,7 +7,7 @@ Rendering of the following content is currently supported:
 * Error messages via :class:`pyframe.content.ErrorMessage
 
 Author: Bernd Kalbfuß
-License: t.b.d.
+License: GNU General Public License v3 (GPLv3)
 """
 
 from . base import ContentBase, ErrorMessage, LabeledContent
