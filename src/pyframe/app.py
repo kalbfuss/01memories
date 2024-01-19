@@ -571,8 +571,7 @@ class App(kivy.app.App, Controller):
         if self._display_state == DISPLAY_STATE.OFF: return
         Logger.info("Controller: Turning display off.")
         # Turn display off on Linux with X server.
-        subprocess.run("/usr/bin/xset dpms force off", shell=True, stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL)
+#        subprocess.run("/usr/bin/xset dpms force off", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         # Update display state.
         self._display_state = DISPLAY_STATE.OFF
         self.dispatch('on_state_change')
