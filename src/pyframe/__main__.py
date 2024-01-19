@@ -18,14 +18,10 @@ def handler(sig, frame):
     stopTouchApp()
 
 
-if __name__ == "__main__":
-    # Catch interrupt and term signals and exit gracefully.
-    signal.signal(signal.SIGINT, handler)
-    signal.signal(signal.SIGTERM, handler)
-    # Run application.
-    try:
-        app.run()
-    except Exception as e:
-        Logger.critical(e)
-    app.close()
-    stopTouchApp()
+# Catch interrupt and term signals and exit gracefully.
+signal.signal(signal.SIGINT, handler)
+signal.signal(signal.SIGTERM, handler)
+# Run application.
+app.run()
+app.close()
+stopTouchApp()
