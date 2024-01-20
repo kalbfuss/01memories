@@ -307,9 +307,11 @@ class Index:
             if self._session:
                 logging.debug(f"Closing database session.")
                 self._session.close()
+                self._session = None
             if self._engine:
                 logging.debug(f"Disposing engine for database '{self._dbname}'.")
                 self._engine.dispose()
+                self._engine = None
         except Exception as e:
             logging.error(f"An error ocurred while closing the index database '{self._dbname}': {e}")
 

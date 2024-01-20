@@ -1,27 +1,27 @@
-"""pyframe main module."""
+"""Pyframe main module.
 
-import signal
-import time
+Author: Bernd Kalbfuss
+License: GNU General Public License v3 (GPLv3)
+"""
 
-from kivy.base import stopTouchApp
-from kivy.core.window import Window
-from kivy.logger import Logger
-
-from .app import App
-
-app = App()
-
-def handler(sig, frame):
-    """Close application after SIGINT and SIGTERM signals."""
-    Logger.info(f"App: Signal '{signal.strsignal(sig)}' received. Preparing for safe exit.")
-    app.close()
-    stopTouchApp()
+import argparse
 
 
-# Catch interrupt and term signals and exit gracefully.
-signal.signal(signal.SIGINT, handler)
-signal.signal(signal.SIGTERM, handler)
-# Run application.
-app.run()
-app.close()
-stopTouchApp()
+# Parse arguments
+parser = argparse.ArgumentParser(description='01 memories digital photo frame application.')
+parser.add_argument('command', type=str, choices = ['show', 'index'])
+parser.add_argument('items', type=str, nargs='*')
+parser.add_argument('--rebuild', action='store_const', const=True, default=False)
+args = parser.parse_args()
+
+
+# Start slideshow application.
+if args.command == 'show':
+    from .show import run_app
+    run_app()
+# Start repository indexer.
+elif args.command == 'index':
+    from .index import run_indexer
+    run_indexer(args.items, args.rebuild)
+else:
+    parser.print_help()

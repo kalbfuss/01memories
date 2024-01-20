@@ -3,8 +3,8 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "01memories"
-version = "0.0.12"
+name = "01memories-resize"
+version = "0.0.18"
 authors = [
   { name="Bernd Kalbfuss", email="kalbfuss@gmx.net" },
 ]

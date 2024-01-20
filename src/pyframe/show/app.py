@@ -1,4 +1,4 @@
-"""Module providing Pyframe application."""
+"""Module providing Pyframe slideshow application."""
 
 import copy
 import kivy.app
@@ -7,26 +7,47 @@ import os.path
 import repository.local
 import repository.webdav
 import subprocess
+import signal
 import sys
 import time
 import traceback
 import yaml
 
-from importlib import import_module
+#from importlib import import_module
 from repository import ConfigError, Index, Repository, UuidError, check_param, check_valid_required
 from xdg_base_dirs import xdg_cache_home, xdg_config_home
 
-from kivy.base import ExceptionManager
+from kivy.base import ExceptionManager, stopTouchApp
 from kivy.core.window import Window
 from kivy.clock import Clock
 from kivy.logger import Logger, LOG_LEVELS
 
-from .mylogging import Handler
-from .indexer import Indexer
 from .slideshow import Slideshow
 from .scheduler import Scheduler
 from .controller import Controller, DISPLAY_MODE, DISPLAY_STATE, PLAY_STATE
 from .mqtt import MqttInterface
+
+from ..common import _create_repositories, _configure_logging, _load_config, _load_index
+
+
+def signal_handler(sig, frame):
+    """Close application after SIGINT and SIGTERM signals."""
+    Logger.warn(f"App: Signal '{signal.strsignal(sig)}' received. Preparing for safe exit.")
+    app.close()
+    stopTouchApp()
+
+
+def run_app():
+    """Start slideshow."""
+    # Catch interrupt and term signals and exit gracefully.
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
+    # Run slideshow.
+    app = App()
+    app.run()
+    # Clean up and exit.
+    app.close()
+    stopTouchApp()
 
 
 class ExceptionHandler(kivy.base.ExceptionHandler):
@@ -83,119 +104,8 @@ class App(kivy.app.App, Controller):
     CONF_REQ_KEYS = {'display_mode', 'display_state', 'display_timeout', 'enable_exception_handler', 'enable_mqtt', 'enable_logging', 'enable_scheduler', 'index', 'log_level', 'log_dir', 'repositories', 'slideshows', 'window_position', 'window_size'} | Slideshow.CONF_REQ_KEYS
     CONF_VALID_KEYS = {'cache', 'index_update_at', 'index_update_interval', 'mqtt', 'schedule' } | CONF_REQ_KEYS | Slideshow.CONF_VALID_KEYS
 
-    def __configure_logging(self):
-        """Configure logging.
 
-        Adjusts log levels based on the application configuration and adds a
-        custom log handler for logging to rotating log files.
-
-        :raises: ConfigError
-        """
-        config = self._config
-
-        # Check parameters.
-        check_param('enable_logging', config, is_bool=True)
-        check_param('log_level', config, options=set(LOG_LEVELS.keys()))
-        check_param('log_dir', config, is_str=True)
-
-        # Set log levels of default python and Kivy Logger.
-        numeric_level = LOG_LEVELS[config['log_level']]
-        logging.basicConfig(level=numeric_level)
-        Logger.setLevel(numeric_level)
-
-        # Reduce logging by IPTCInfo and exifread to errors or specified log
-        # level, whatever is higher.
-        logging.getLogger("iptcinfo").setLevel(max(logging.ERROR, numeric_level))
-        logging.getLogger("exifread").setLevel(max(logging.ERROR, numeric_level))
-        # Reduce logging by SQLAlchemy to warnings or specified log level,
-        # whatever is higher.
-        logging.getLogger("sqlalchemy").setLevel(max(logging.WARN, numeric_level))
-
-        # Write all log messages to rotating log files using a special log
-        # handler if file logging is activated. A separate log file is used for
-        # the background indexing thread.
-        if config['enable_logging'] == "on" or config['enable_logging'] == True:
-            try:
-                self._logHandler = Handler(config['log_dir'], "indexer")
-                logging.getLogger().addHandler(self._logHandler)
-            except Exception as e:
-                raise Exception(f"App: An error occurred while installing the log handler. {e}")
-
-    def __create_repositories(self):
-        """Create file repositories from configuration."""
-        config = self._config
-        index = self._index
-        # Dictionary used to map type names to repository classes.
-        supported_types = {
-            'local': ("repository.local", "Repository"),
-            'webdav': ("repository.webdav", "Repository"),
-            'rclone': ("repository.rclone", "Repository")}
-
-        # Exit application if no repositories have been defined.
-        if 'repositories' not in config or type(config['repositories']) is not dict:
-            raise ConfigError("Configuration: Exiting application as no repositories have been defined.")
-
-        # Extract global repository index configuration.
-        global_index_config = {key: config[key] for key in ('index_update_interval', 'index_update_at') if key in config}
-
-        # Create repositories based on the configuration.
-        for uuid, local_config in config['repositories'].items():
-
-            # Skip disabled repositories.
-            enabled_flag = local_config.get('enabled', True)
-            if enabled_flag is False or enabled_flag == "off":
-                Logger.info(f"Configuration: Skipping repository '{uuid}' as it has been disabled.")
-                continue
-
-            # Combine global and local repository index configuration. Local
-            # configuration settings supersede global settings.
-            index_config = copy.deepcopy(global_index_config)
-            index_config.update(local_config)
-
-            # Check parameters.
-            check_param('type', local_config, options=set(supported_types.keys()))
-            check_param('index_update_interval', index_config, required=False, is_int=True, ge=0)
-            check_param('index_update_at', index_config, required=False, is_time=True)
-
-            # Substitute patterns in root paths of local directories. The
-            # following patterns are substituted:
-            #   {sys.prefix} => sys.prefix (e.g. "/usr/local")
-            if local_config.get('type') == "local":
-                local_config['root'] = local_config.get('root').replace("{sys.prefix}", sys.prefix, 1)
-
-            # Retrieve repository class from type.
-            ref = supported_types[local_config.get('type')]
-            module = import_module(ref[0])
-            rep_class = getattr(module, ref[1])
-
-            # Combine global and local repository configuration. Local
-            # configuration settings supersede global settings.
-            rep_config = copy.deepcopy(config)
-            rep_config.update(local_config)
-            rep_config = { key: rep_config[key] for key in rep_class.CONF_VALID_KEYS if key in rep_config }
-
-            try:
-                # Create repository instance.
-                Logger.info(f"Configuration: Creating {local_config.get('type')} repository '{uuid}'.")
-                rep = rep_class(uuid, rep_config, index=index)
-            # Catch any invalid configuration and UUID errors.
-            except (ConfigError, UuidError) as e:
-                raise ConfigError(f"Configuration: Error in the configuration of repository '{uuid}'. {e}", rep_config)
-
-            try:
-                # Queue the repository for indexing.
-                interval = index_config.get('index_update_interval', 0)
-                at = index_config.get('index_update_at', None)
-                self._indexer.queue(rep, interval, at)
-            # Catch any invalid configuration and UUID errors.
-            except (ConfigError) as e:
-                raise ConfigError(f"Configuration: Error in the configuration of repository '{uuid}'. {e}", index_config)
-
-        # Exit application if no valid repositories have been defined.
-        if len(Repository._repositories.items()) == 0:
-            raise ConfigError("Configuration: Exiting application as no valid repositories have been defined.", config['repositories'])
-
-    def __create_slideshows(self):
+    def _create_slideshows(self):
         """Create slideshows from configuration.
 
         Slideshow configurations are extracted from the 'slideshows' section
@@ -235,15 +145,14 @@ class App(kivy.app.App, Controller):
                 slideshow.bind(on_content_change=self.on_content_change)
 
             except ConfigError as e:
-                raise ConfigError(f"Configuration: Error in the configuration of slideshow '{name}'. {e}", config)
-            except Exception as e:
-                raise Exception(f"Slideshow: {e}")
+                raise ConfigError(f"Error in the configuration of slideshow '{name}'. {e}", config)
 
-        # Exit application if no valid repositories have been defined.
+        # Exit application if no valid slideshows have been defined.
         if len(self._slideshows.items()) == 0:
-            raise ConfigError("Configuration: Exiting application as no valid slideshows have been defined.")
+            raise ConfigError("Exiting application as no valid slideshows have been defined.")
 
-    def __init_display(self):
+
+    def _init_display(self):
         """Initialize display and window.
 
         :raises: ConfigError
@@ -277,7 +186,7 @@ class App(kivy.app.App, Controller):
         elif value == "auto":
             pass
         else:
-            raise ConfigError(f"Configuration: Invalid value '{value}' for parameter 'window_position' specified. Valid values are [left, top] and 'auto'.", config)
+            raise ConfigError(f"Invalid value '{value}' for parameter 'window_position' specified. Valid values are [left, top] and 'auto'.", config)
 
         # Set window size.
         value = config['window_size']
@@ -286,64 +195,10 @@ class App(kivy.app.App, Controller):
         elif value == "full":
             Window.fullscreen = 'auto'
         else:
-            raise ConfigError(f"Configuration: Invalid value '{value}' for parameter 'window_size' specified. Valid values are [width, height] and 'full'.", config)
+            raise ConfigError(f"Invalid value '{value}' for parameter 'window_size' specified. Valid values are [width, height] and 'full'.", config)
         # Disable display of mouse cursor
         Window.show_cursor = False
 
-    def __load_config(self):
-        """Load application configuration.
-
-        Loads the application configuration from the default configuration file
-        and applies default values where missing.
-        """
-        conf_paths = [
-            "./config.yaml",
-            f"{xdg_config_home()}/01memories/config.yaml",
-            "/etc/01memories/config.yaml",
-            f"{sys.prefix}/share/01memories/config/config.yaml"
-        ]
-
-        # Determine path of configuration file.
-        for path in conf_paths:
-            if os.path.isfile(path): break
-
-        # Load configuration from yaml file.
-        with open(path, 'r') as config_file:
-            config = yaml.safe_load(config_file)
-        self._config.update(config)
-        Logger.debug(f"Configuration: Configuration = {self._config}")
-        return self._config
-
-    # Default configuration.
-    _config = {
-        'bg_color': [1, 1, 1],
-        'cache': f"{xdg_cache_home()}/01memories/cache",
-        'direction': "ascending",
-        'display_mode': "static",
-        'display_state': "on",
-        'display_timeout': 300,
-        'enable_exception_handler': False,
-        'enable_logging': True,
-        'enable_scheduler': True,
-        'enable_mqtt': True,
-        'index': f"{xdg_cache_home()}/01memories/index.sqlite",
-        'index_update_interval': 0,
-        'label_mode': "off",
-        'label_content': "full",
-        'label_duration': 60,
-        'label_font_size': 0.08,
-        'label_padding': 0.03,
-        'log_level': "warning",
-        'log_dir': f"{xdg_cache_home()}/01memories/log",
-        'pause': 300,
-        'resize': "fill",
-        'rotation': 0,
-        'smart_limit': 10,
-        'smart_time': 24,
-        'order': "name",
-        'window_position': "auto",
-        'window_size': "full"
-    }
 
     def build(self):
         """Build Kivy application.
@@ -361,38 +216,18 @@ class App(kivy.app.App, Controller):
         self.register_event_type('on_state_change')
 
         # Load configuration.
-        self.__load_config()
+        self._config = _load_config()
         # Check the configuration for valid and required parameters.
         check_valid_required(self._config, self.CONF_VALID_KEYS, self.CONF_REQ_KEYS)
 
         # Configure logging.
-        self.__configure_logging()
-
-        # Create index directory if it does not exist yet.
-        index_path = self._config['index']
-        index_dir = os.path.dirname(index_path)
-        try:
-            os.makedirs(index_dir, exist_ok=True)
-        except Exception as e:
-            raise Exception(f"An exception occurred while creating the index file directory '{index_dir}': {e}")
-        # Create/load index.
-        self._index = Index(index_path)
-        # Create background indexer.
-        self._indexer = Indexer(self._index)
-
-        # Create cache directory if it does not exist yet.
-        cache_dir = self._config['cache']
-        try:
-            os.makedirs(cache_dir, exist_ok=True)
-        except Exception as e:
-            raise Exception(f"An exception occurred while creating the index file directory '{cache_dir}': {e}")
-
-        # Create repositories.
-        self.__create_repositories()
-        # Start building index in the background.
-        self._indexer.start()
+        _configure_logging(self._config)
+        # Load/create index.
+        self._index = _load_index(self._config)
+        # Create repositories from configuration.
+        _create_repositories(self._config, self._index)
         # Create slideshows.
-        self.__create_slideshows()
+        self._create_slideshows()
 
         # Make first slideshow the main root widget
         self.root = next(iter(self._slideshows.values()))
@@ -403,12 +238,12 @@ class App(kivy.app.App, Controller):
             try:
                 self._mqtt_interface = MqttInterface(self._config['mqtt'], self)
             except ConfigError as e:
-                raise ConfigError(f"Configuration: Error in the MQTT interface configuration. {e}", e.config)
+                raise ConfigError(f"Error in the MQTT interface configuration. {e}", e.config)
             except Exception as e:
                 raise Exception(f"MQTT: {e}")
 
         # Initialize display
-        self.__init_display()
+        self._init_display()
 
         # Bind keyboard listener
         Window.bind(on_keyboard=self.on_keyboard)
@@ -434,6 +269,7 @@ class App(kivy.app.App, Controller):
             ExceptionManager.add_handler(ExceptionHandler(self))
 
         return self.root
+
 
     def on_content_change(self, slideshow, *largs):
         """Handle slideshow content change events."""
