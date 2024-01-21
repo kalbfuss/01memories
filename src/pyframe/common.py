@@ -184,9 +184,9 @@ def _load_config():
     """
     conf_paths = [
         "./config.yaml",
-        " ~/.config/01memories/config.yaml",
+        os.path.expanduser("~/.config/01memories/config.yaml"),
         "/etc/01memories/config.yaml",
-        "~/.local/share/01memories/config/config.yaml",
+        os.path.expanduser("~/.local/share/01memories/config/config.yaml"),
         "/usr/local/share/01memories/config/config.yaml",
         "/usr/share/01memories/config/config.yaml"
     ]
