@@ -2,7 +2,7 @@ repositories:
   Photos 1:
     type: local
     root: ./local/photos1
-#    enabled: true
+    enabled: false
   Photos 2:
     type: local
     root: ./local/photos2
@@ -10,11 +10,11 @@ repositories:
   Frankreich:
     type: local
     root: ./local/frankreich
-    enabled: true
+    enabled: false
   Videos:
     type: local
     root: ./local/videos
-    enabled: false
+    enabled: true
   Formats:
     type: local
     root: ./local/formats
@@ -43,9 +43,9 @@ repositories:
 slideshows:
   Show 1:
     repositories:
-      - "Photos 1"
-      - "Frankreich"
-#      - "Videos"
+#      - "Photos 1"
+#      - "Frankreich"
+      - "Videos"
 #      - "WebDAV Photos"
 #      - "Tags"
 #      - "SMB Photos"
@@ -115,5 +115,6 @@ display_mode: static
 label_content: short
 label_mode: auto
 label_duration: 2
+#window_position: [ 0, 0 ]
 window_size: [ 800, 450 ]
 #window_size: full
