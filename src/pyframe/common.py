@@ -3,6 +3,7 @@
 import copy
 import logging
 import os
+import os.path
 import sys
 import yaml
 
@@ -21,7 +22,7 @@ PROJECT_NAME = "Pyframe project"
 # Default configuration
 DEFAULT_CONFIG = {
     'bg_color': [1, 1, 1],
-    'cache': f"~/.cache/01memories/cache",
+    'cache': os.path.expanduser(f"~/.cache/01memories/cache"),
     'direction': "ascending",
     'display_mode': "static",
     'display_state': "on",
@@ -30,7 +31,7 @@ DEFAULT_CONFIG = {
     'enable_logging': True,
     'enable_scheduler': True,
     'enable_mqtt': True,
-    'index': f"~/.cache/01memories/index.sqlite",
+    'index': os.path.expanduser(f"~/.cache/01memories/index.sqlite"),
     'index_update_interval': 0,
     'label_mode': "off",
     'label_content': "full",
@@ -38,7 +39,7 @@ DEFAULT_CONFIG = {
     'label_font_size': 0.08,
     'label_padding': 0.03,
     'log_level': "warning",
-    'log_dir': f"~/.cache/01memories/log",
+    'log_dir': os.path.expanduser(f"~/.cache/01memories/log"),
     'pause': 300,
     'resize': "fill",
     'rotation': 0,
