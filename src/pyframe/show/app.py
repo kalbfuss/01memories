@@ -15,7 +15,6 @@ import yaml
 
 #from importlib import import_module
 from repository import ConfigError, Index, Repository, UuidError, check_param, check_valid_required
-from xdg_base_dirs import xdg_cache_home, xdg_config_home
 
 from kivy.base import ExceptionManager, stopTouchApp
 from kivy.core.window import Window
@@ -98,7 +97,7 @@ class ExceptionHandler(kivy.base.ExceptionHandler):
 
 
 class App(kivy.app.App, Controller):
-    """Pyframe main application."""
+    """Pyframe slideshow application."""
 
     # Required and valid configuration parameters
     CONF_REQ_KEYS = {'display_mode', 'display_state', 'display_timeout', 'enable_exception_handler', 'enable_mqtt', 'enable_logging', 'enable_scheduler', 'index', 'log_level', 'log_dir', 'repositories', 'slideshows', 'window_position', 'window_size'} | Slideshow.CONF_REQ_KEYS
