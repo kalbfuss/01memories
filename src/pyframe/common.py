@@ -49,6 +49,7 @@ DEFAULT_CONFIG = {
     'window_size': "full"
 }
 
+
 # Mapping of name to numeric log level.
 LOG_LEVELS = {
     'debug': logging.DEBUG,

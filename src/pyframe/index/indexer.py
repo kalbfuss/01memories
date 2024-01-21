@@ -32,6 +32,7 @@ def run_indexer(uuids, rebuild):
 class Indexer:
     """Pyframe repository indexer."""
 
+
     def __init__(self, uuids, rebuild):
         """Initialize repository indexer instance."""
         # Load configuration.
