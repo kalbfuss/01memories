@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Python interpreter
+PYTHON=/usr/bin/python
+
+# Use GL4ES library if available. Required to provide basic OpenGL support on
+# pure OpenGL ES devices such as the Radxa Zero 3W.
+export LD_LIBRARY_PATH=/usr/lib/gl4es
+
+# Select default video player. Valid values are "gstplayer", "ffmpeg"
+# or "ffpyplayer".
+os.environ['KIVY_VIDEO'] = "ffpyplayer"
+
+# Start the slideshow
+$(PYTHON) -m pyframe $@
