@@ -3,6 +3,7 @@
 import logging
 import os
 import signal
+import sys
 
 from repository import ConfigError, Index, Repository
 
@@ -15,6 +16,7 @@ def signal_handler(sig, frame):
     """Close application after SIGINT and SIGTERM signals."""
     logging.warning(f"Indexer: Signal '{signal.strsignal(sig)}' received. Preparing for safe exit.")
     indexer.close()
+    sys.exit(1)
 
 
 def run_indexer(uuids, rebuild):
