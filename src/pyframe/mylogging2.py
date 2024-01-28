@@ -1,4 +1,10 @@
-"""Module providing pyframe log handler."""
+"""Module providing pyframe log handler.
+
++++ OBSOLETE +++ OBSOLETE +++ OBSOLETE +++ OBSOLETE +++ OBSOLETE +++
+
+This module is obsolete and no longer removed. It will be removed in the near
+future. Do not use any longer.
+"""
 
 import logging
 import os

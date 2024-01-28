@@ -1,4 +1,10 @@
-"""Module providing meta data background indexer."""
+"""Module providing meta data background indexer.
+
++++ OBSOLETE +++ OBSOLETE +++ OBSOLETE +++ OBSOLETE +++ OBSOLETE +++
+
+This module is obsolete and no longer removed. It will be removed in the near
+future. Do not use any longer.
+"""
 
 import logging
 
