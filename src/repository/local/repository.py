@@ -136,7 +136,7 @@ class FileIterator(repository.FileIterator):
             # Construct relative path to root directory of the repository.
             uuid = os.path.relpath(entry.path, start=self._rep.root)
             # Return the next file.
-            logging.debug(f"Creating local repository file {uuid}.")
+            logging.debug(f"Instantiating local repository file '{uuid}'.")
             return self._rep.file_by_uuid(uuid, self._index_lookup, self._extract_metadata)
 
         except StopIteration:
