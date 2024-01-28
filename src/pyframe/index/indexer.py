@@ -40,7 +40,7 @@ class Indexer:
         # Load configuration.
         self._config = _load_config()
         # Configure logging.
-        _configure_logging(self._config)
+        _configure_logging(self._config, "indexer.log")
 
         # Load/create index.
         self._index = _load_index(self._config)

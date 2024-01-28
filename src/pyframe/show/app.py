@@ -220,7 +220,7 @@ class App(kivy.app.App, Controller):
         check_valid_required(self._config, self.CONF_VALID_KEYS, self.CONF_REQ_KEYS)
 
         # Configure logging.
-        _configure_logging(self._config)
+        _configure_logging(self._config, "pyframe.log")
         # Load/create index.
         self._index = _load_index(self._config)
         # Create repositories from configuration.
@@ -228,7 +228,7 @@ class App(kivy.app.App, Controller):
         # Create slideshows.
         self._create_slideshows()
 
-        # Make first slideshow the main root widget
+        # Make first slideshow the main root widget.
         self.root = next(iter(self._slideshows.values()))
 
         # Create mqtt interface if configured and activated.

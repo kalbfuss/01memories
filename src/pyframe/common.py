@@ -8,10 +8,11 @@ import sys
 import yaml
 
 from importlib import import_module
+from logging.handlers import TimedRotatingFileHandler
 from kivy.logger import Logger
 from repository import check_param, ConfigError, Index, Repository, UuidError
 
-from .mylogging import Handler
+#from .mylogging import Handler
 
 
 APPLICATION_NAME = "Pyframe"
@@ -61,7 +62,28 @@ LOG_LEVELS = {
 }
 
 
-def _configure_logging(config):
+class Formatter(logging.Formatter):
+    """Pyframe log formatter.
+
+    Used to imitate the Kivy log format in rotating log files.
+    """
+
+    def __init__(self, *args):
+        """Initiaize Formatter instance."""
+        super().__init__(*args)
+
+    def format(self, record):
+        """Split and format record."""
+        try:
+            msg = record.msg.split(':', 1)
+            if len(msg) == 2:
+                record.msg = '[%-13s]%s' % (msg[0], msg[1])
+        except:
+            pass
+        return super().format(record)
+
+
+def _configure_logging(config, filename):
     """Configure logging.
 
     Adjusts log levels based on the application configuration and adds a
@@ -69,7 +91,10 @@ def _configure_logging(config):
 
     :param config: Application configuration
     :type config: dict
-    :raises: Exception
+    :param filename: Log filename
+    :type filename: str
+    :raises: Raises an exception if the directory cannot be created or is
+      not writable.
     """
 
     # Check parameters.
@@ -90,12 +115,28 @@ def _configure_logging(config):
     # whatever is higher.
     logging.getLogger("sqlalchemy").setLevel(max(logging.WARN, numeric_level))
 
-    # Write all log messages to rotating log files using a special log
-    # handler if file logging is activated. A separate log file is used for
-    # the background indexing thread.
+    # Create log directory if it does not exist yet.
+    log_dir = config['log_dir']
+    if not os.path.exists(log_dir):
+        try:
+            os.makedirs(log_dir, exist_ok=True)
+        except Exception as e:
+            raise Exception(f"An exception occurred while creating the log directory '{log_dir}': {e}")
+
+    # Make sure the directory is writable.
+    if not os.access(log_dir, os.W_OK):
+        raise Exception(f"The log directory '{log_dir}' is not writeable.")
+
+    # Write all log messages to a rotating log file.
     if config['enable_logging'] == "on" or config['enable_logging'] == True:
         try:
-            logHandler = Handler(config['log_dir'], "indexer")
+            fullpath = os.path.join(log_dir, filename)
+            logHandler = TimedRotatingFileHandler(os.path.join(fullpath), when="h", interval=24, backupCount=5)
+            # Apply Kivy style formatter
+            formatter = Formatter("%(asctime)s [%(levelname)-8s] %(message)s", "%Y-%m-%d %H:%M:%S")
+            logHandler.setFormatter(formatter)
+            # Add rotating log file handler to default logger.
+            logging.info(f"Enabling logging to file '{fullpath}'.")
             logging.getLogger().addHandler(logHandler)
         except Exception as e:
             raise Exception(f"An error occurred while installing the log handler: {e}")
