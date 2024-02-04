@@ -29,7 +29,9 @@ class SlideshowImage(LabeledContent):
         :type config: dict
         """
         super().__init__(file, config)
-        self._rotation = file.rotation - config['rotation']
+        # Calculate total rotation from image rotation and rotation configured for the slideshow.
+        # To avoid negative values and values beyond 360°, we additionally apply a modulo operation.
+        self._rotation = (file.rotation - config['rotation']) % 360
         self._bgcolor = config['bg_color']
         self._resize = config['resize']
         # Create and add image widget
