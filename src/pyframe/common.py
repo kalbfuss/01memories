@@ -181,6 +181,7 @@ def _create_repositories(config, index):
         # following patterns are substituted:
         #   {sys.prefix} => sys.prefix (e.g. "/usr/local")
         if rep_config.get('type') == "local":
+            rep_config['root'] = os.path.expanduser(rep_config.get('root'))
             rep_config['root'] = rep_config.get('root').replace("{sys.prefix}", sys.prefix, 1)
 
         # Retrieve repository class from type.
