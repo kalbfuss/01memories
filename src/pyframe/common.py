@@ -237,7 +237,7 @@ def _load_config():
         if os.path.isfile(path): break
 
     # Load configuration from yaml file.
-    with open(path, 'r') as config_file:
+    with open(path, 'r', encoding='utf8') as config_file:
         config2 = yaml.safe_load(config_file)
 
     # Copy and update default configuration.
