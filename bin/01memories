@@ -11,5 +11,8 @@ export LD_LIBRARY_PATH=/usr/lib/gl4es
 # or "ffpyplayer".
 export KIVY_VIDEO="ffpyplayer"
 
+# Make sure we use utf-8 encoding
+export PYTHONIOENCODING=UTF-8
+
 # Start the slideshow
 $PYTHON -m pyframe $@
