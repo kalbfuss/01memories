@@ -50,7 +50,7 @@ class RepositoryFile(repository.RepositoryFile):
         # Attempt to determine last modification date.
         if not self._in_index:
             try:
-                info = rclone.ls(f'"{os.path.join(rep.root, uuid)}"', max_depth=1)[0]
+                info = rclone.ls(f"{os.path.join(rep.root, uuid)}", max_depth=1)[0]
             except Exception as e:
                 raise IoError(f"An exception occurred while retrieving attributes of file {'uuid'}. {e}", e)
             try:
@@ -95,7 +95,7 @@ class RepositoryFile(repository.RepositoryFile):
             # Download file from WebDav repository.
             logging.info(f"Downloading file '{self.uuid}' from rclone remote to local cache file.")
             try:
-                rclone.copy(f'"{os.path.join(self._rep.root, self._uuid)}"', f'"{self._path}"', show_progress=False)
+                rclone.copyto(f"{os.path.join(self._rep.root, self._uuid)}", f"{self._path}", show_progress=False)
             except Exception as e:
                 raise repository.IoError(f"An exception occurred while downloading file '{self._uuid}' from rclone remote. {e}", e)
 

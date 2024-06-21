@@ -135,7 +135,7 @@ class FileIterator(repository.FileIterator):
             # The default max_depth of rclone is 1. A value of 0 menas no limit,
             # but is not passed on by the wrapper. As workaround we specify a
             # reasonably high number.
-            self._file_list = rclone.ls(f"'{rep.root}'", max_depth=1000)
+            self._file_list = rclone.ls(f"{rep.root}", max_depth=1000)
         except Exception as e:
             raise IoError(f"An exception occurred while listing the root directory. {e}", e)
         self._iterator = iter(self._file_list)
