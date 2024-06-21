@@ -1,0 +1,12 @@
+repositories:
+  # Local repository with example photos.
+  Examples:
+    type: local
+    root: "~/src/01memories/local/photos1"
+
+slideshows:
+  # Slideshow with example photos shown for 60 s in random sequence.
+  Examples:
+    repositories: Examples
+    pause: 60
+    order: random
