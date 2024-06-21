@@ -93,7 +93,7 @@ class MqttInterface:
         user = config['user']
         password = config['password']
 
-        self._device_id = config.get('device_id', "pyframe")
+        self._device_id = config.get('device_id', "01memories")
         self._device_name = config.get('device_name', self._device_id)
         self._availability_topic = f"homeassistant/switch/{self._device_id}/available"
 
