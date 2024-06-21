@@ -35,7 +35,7 @@ class SlideshowImage(LabeledContent):
         self._bgcolor = config['bg_color']
         self._resize = config['resize']
         # Create and add image widget
-        self._image = Image(source=file.source, allow_stretch=True)
+        self._image = Image(source=file.source, mipmap=True)
         self.add_widget(self._image, len(self.children))
         # Call update_canvas method when the size of the widget changes.
         self.bind(size=self.update_canvas)
