@@ -2,7 +2,7 @@ repositories:
   # Local repository with example photos.
   Examples:
     type: local
-    root: ./local/examples
+    root: /usr/local/share/examples
 
 slideshows:
   # Slideshow with example photos shown for 60 s in random sequence.
