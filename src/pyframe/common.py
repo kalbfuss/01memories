@@ -131,7 +131,7 @@ def _configure_logging(config, filename):
     if config['enable_logging'] == "on" or config['enable_logging'] == True:
         try:
             fullpath = os.path.join(log_dir, filename)
-            logHandler = TimedRotatingFileHandler(os.path.join(fullpath), when="h", interval=24, backupCount=5)
+            logHandler = TimedRotatingFileHandler(os.path.join(fullpath), when="h", interval=24, backupCount=5, encoding='utf-8', errors='ignore')
             # Apply Kivy style formatter
             formatter = Formatter("%(asctime)s [%(levelname)-8s] %(message)s", "%Y-%m-%d %H:%M:%S")
             logHandler.setFormatter(formatter)
@@ -230,7 +230,8 @@ def _load_config():
         "/etc/01memories/config.yaml",
         os.path.expanduser("~/.local/share/01memories/config/config.yaml"),
         "/usr/local/share/01memories/config/config.yaml",
-        "/usr/share/01memories/config/config.yaml"
+        "/usr/share/01memories/config/config.yaml",
+        "../config/config-dev.yaml"
     ]
 
     # Determine path of configuration file.
