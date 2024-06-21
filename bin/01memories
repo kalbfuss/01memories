@@ -1,7 +1,12 @@
 #!/bin/bash
 
 # Python interpreter
-PYTHON=/usr/bin/python
+#PYTHON=/usr/bin/python
+PYTHON=$(which python)
+
+# Set authority file and active display in case we are starting this script from an SSH session.
+export XAUTHORITY=/home/$USER/.Xauthority
+export DISPLAY=:0
 
 # Use GL4ES library if available. Required to provide basic OpenGL support on
 # pure OpenGL ES devices such as the Radxa Zero 3W.
@@ -14,5 +19,23 @@ export KIVY_VIDEO="ffpyplayer"
 # Make sure we use utf-8 encoding
 export PYTHONIOENCODING=UTF-8
 
-# Start the slideshow
+# Test for "show" command.
+if [ "$1" == "show" ]; then
+    # Infinite application loop.
+    while :
+    do
+            # (Re-)start the slideshow.
+            $PYTHON -m pyframe $@
+            # Stop loop if application exited without error.
+            if [ $? -eq 0 ]; then
+                exit 0;
+            fi
+            # Restart application otherwise.
+            echo "Application 01memories was stopped unexpectedly. Waiting for 60 seconds before restart."
+            sleep 60
+            echo "Restarting 01memories application. Press [CTRL+C] to stop."
+    done
+fi
+
+# Execute all other commands only once.
 $PYTHON -m pyframe $@
