@@ -5,7 +5,7 @@
 /*.sqlite*
 /*.sqlite-shm*
 /*.sqlite-wal*
-#/config/config-dev.yaml
+/config/config-dev.yaml
 config.yaml
 
 # Byte-compiled / optimized / DLL files
