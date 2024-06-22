@@ -14,9 +14,9 @@ In essence, you only need the following components to build your own frame:
 
 While in principle any flat screen with the necessary ports can be used, you probably want a very flat, portable monitor to keep the entire frame as flat as possible. The disadvantage is that portable screens are (still) limited in size. An advantage is that they can usually be powered via a USB-C connection. In my case I decided for the 17.3" FHD monitor [A1 MAX](https://www.arzopa.com/products/portable-monitor-17-3-100-srgb-1080p-fhd-hdr-ips-laptop-computer-display) from Arzopa.
 
-I bought my picture from the local hardware store (500x4000 mm2) and had them cut a passepartout (photo mount) fitting the portable monitor.
+I bought my picture frame from the local hardware store (500x4000 mm2) and had them cut a passepartout (photo mount) fitting the portable monitor.
 
-<img src="docs/images/frame/frame%20-%20front.jpg" alt="home assistant - device" style="zoom:50%;" />
+<img src="doc/images/frame/frame%20-%20front.jpg" alt="home assistant - device" style="zoom:50%;" />
 
 Mounting the screen into the frame requires a bit of craftman's skills, the necessary tools (drill, saw, file, sanding paper, screw driver) and materials (wooden board, screws). Double-sided tape helps to ensure proper fit of the passepartout onto the monitor. 
 
@@ -24,23 +24,23 @@ I used 3D printed blocks and small screws to fix the board to the frame, but woo
 
 In the end, the result does not have to be pretty from the rear as long as the screen is nicely centered and fitting the passepartout. Do not forget to clean the glass before re-assembling the screen!
 
-<img src="docs/images/frame/frame%20-%20rear.jpg" alt="home assistant - device" style="zoom:50%;" />
+<img src="doc/images/frame/frame%20-%20rear.jpg" alt="home assistant - device" style="zoom:50%;" />
 
 Regarding the SBC, there are many options available these days - most of them ARM-based and thus in principle Linux compatible. Most important for our purpose is that the SBC is sufficiently flat to fit under the photo frame. This usually excludes boards with RJ45 or stacked USB A ports. The board should further be fanless and not produce too much heat. Potentially, you will have to limit the CPU frequency to achieve the latter.
 
-For the local storage of files, the device should provide >16 GB of non-volatile memory in the form of an SD card or better eMMC flash memory. A USB memory stick will work as well if your SBC provides the necessary USB A port.  If you plan to access remote repositories, the SBC evidently needs to be equipped with a Wifi chip for integration into your home network (recommended).
+For the local storage of files, the device should provide >16 GB of non-volatile memory in the form of an SD card or better eMMC flash memory. A USB memory stick will work as well if your SBC provides the necessary USB port.  If you plan to access remote repositories, the SBC evidently needs to be equipped with a Wifi chip for integration into your home network (recommended).
 
 Finally, the SBC needs to be strong enough to process photos and videos on-the-fly. This requires sufficient computing power, hardware accelerated graphics (OpenGL ES support) and sufficient RAM (≥512 MB, but preferably ≥1 GB) since the texture of an unpacked photo with 4000x3000 pixels requires about 50MB of memory. For the fluent playback of videos the SBC should further provide hardware accelerated decoding and resizing capabilities, including the necessary **linux drivers**. Specifically the latter can be a challenge for ARM-based SBCs.
 
-In my photo frame project, I finally decided to go with a [Radxa Zero](https://wiki.radxa.com/Zero) after initial failures with a Rasperry Pi Zero (insufficient memory and computing power) and a Banana Pi Zero (missing/incomplete hardware acceleration/driver support).  Further details are provided in the section below. The Raspberry Pi Zero 2 and Raspberry Pi 4 could have been viable options, too, but were not available at the time of construction.
+In my photo frame project, I finally decided to go with a [Radxa Zero](https://wiki.radxa.com/Zero) after initial failures with a Rasperry Pi Zero (insufficient memory and computing power) and a Banana Pi Zero (missing/incomplete hardware acceleration/driver support).  Further details are provided in the section below. The Raspberry Pi Zero 2 and Raspberry Pi 4 might have been viable options, too, but were not available at the time of construction.
 
-<img src="docs/images/frame/radxa%20zero.jpg" alt="home assistant - device" style="zoom:25%;" />
+<img src="doc/images/frame/radxa%20zero.jpg" alt="home assistant - device" style="zoom:25%;" />
 
 Every screen and computer require power. Overall, the problem is not too difficult to solve as long as you have a power outlet behind the frame. Otherwise, you will have to live with a cable on the wall.
 
 If you have a power outlet behind the frame, the challenge is to remain as flat as possible. An elegant solution to the problem is the [sCharge 12W](https://www.smart-things.com/de/produkte/scharge-12w-usb-c-unterputz-stromversorgung/) power supply from Smart Things, which integrates into the wall. The power of 12W has proven sufficient to supply the A1 Max monitor and Radxa Zero SBC.
 
-<img src="docs/images/frame/power%20supply.jpg" alt="home assistant - device" style="zoom: 25%;" />
+<img src="doc/images/frame/power%20supply.jpg" alt="home assistant - device" style="zoom: 25%;" />
 
 ## Radxa Zero ##
 
@@ -116,11 +116,12 @@ To enable the playing of videos we further need *ffmpeg* and the corresponding *
 $ sudo apt install ffmpeg gstreamer1.0-libav
 ```
 
-From here on you can follow the Pyframe installation instructions in the project [README](README.md).
+From here on you can follow the installation instructions in the project [README](README.md).
 
 ### Known limitations
 
 - ***Outdated Armbian version*** – The latest available version from the supplier's [download page](https://github.com/radxa-build/radxa-zero/releases/tag/20220801-0213) is Armbian Focal (22.08). On the [Armbian web page](https://armbian.com) you will also find Armbian Jammy (23.02), however, the image does not boot. Armbian Focal offers the possibility of a release upgrade after installation, which may or may not work (I never tried). Use at your own risk (and if you do so, please, report the outcome).
 
 - ***Missing/incomplete video processing unit (VPU) support*** – The VPU of the Amlogic S905Y2 CPU is in principle supported by a Video4Linux driver. Unfortunately, ffmpeg produces a segmentation fault when forcing it to use the decoder. See the following [ticket](https://trac.ffmpeg.org/ticket/10290) for details.
+
 - ***Missing Display Data Channel/Command Interface (DCC/CI) support*** – The brightness (amongst other things) of external screens can usually be adjusted via the DCC/CI interface (an I<sup>2</sup>C-based interface). Unfortunately, the Designware HDMI driver used by the Radxa Zero does not seem to implement the necessary services. See the following [ticket](https://github.com/rockowitz/ddcutil/issues/307) for details. The brightness of the screen can thus not be adjusted via Software.
