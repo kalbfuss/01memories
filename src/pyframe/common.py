@@ -229,8 +229,7 @@ def _load_config():
         os.path.expanduser("~/.config/01memories/config.yaml"),
         "/etc/01memories/config.yaml",
         os.path.expanduser("~/.local/share/01memories/config/config.yaml"),
-        "/usr/local/share/01memories/config/config.yaml",
-        "/usr/share/01memories/config/config.yaml",
+        f"{sys.prefix}/share/01memories/config/config.yaml",
         "../config/config-dev.yaml"
     ]
 
