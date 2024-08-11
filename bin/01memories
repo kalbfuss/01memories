@@ -1,8 +1,10 @@
 #!/bin/bash
 
 # Python interpreter
-#PYTHON=/usr/bin/python
 PYTHON=$(which python)
+if [ -z "$PYTHON" ]; then
+	PYTHON=$(which python3)
+fi
 
 # Set authority file and active display in case we are starting this script from an SSH session.
 export XAUTHORITY=/home/$USER/.Xauthority
