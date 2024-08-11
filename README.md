@@ -55,7 +55,7 @@ The easiest way to install the application is to install the latest published pa
 $ pip install 01memories
 ```
 
-The *pip* command will automatically install all required dependencies. On some operating systems you will have to [create a Python virtual environment](https://python.land/virtual-environments/virtualenv) first.
+The *pip* command will automatically install all required dependencies. On some operating systems you will have to [create a Python virtual environment](https://python.land/virtual-environments/virtualenv) first. Alternatively you can specify the "--break-system-packages" option.
 
 **Note:** The Digital Memories application comprises of two python packages (*repository* and *pyframe*) and various supporting files. There is no *digital memories* or *01memories* python package.
 
@@ -108,7 +108,7 @@ slideshows:
   Favorites:
     repositories: Local storage
     pause: 60
-    sequence: random
+    order: random
 ```
 
 #### Advanced configuration
