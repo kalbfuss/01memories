@@ -11,5 +11,7 @@ License: GNU General Public License v3 (GPLv3)
 """
 
 from . base import ContentBase, ErrorMessage, LabeledContent
-from . image import SlideshowImage
+# Use PIL for image loading and manipulation
+from . pil_image import SlideshowImage
+#from . image import SlideshowImage
 from . video import SlideshowVideo
