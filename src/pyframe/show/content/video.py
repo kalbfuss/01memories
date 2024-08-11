@@ -34,7 +34,7 @@ class SlideshowVideo(LabeledContent):
         self._bgcolor = config['bg_color']
         self._resize = config['resize']
         # Create and add video widget.
-        self._video = Video(source=file.source, state='stop', allow_stretch=True, options={'eos': 'loop'})
+        self._video = Video(source=file.source, state='stop', fit_mode='contain', options={'eos': 'loop'})
         if not config['sound']: self._video.volume = 0
         self.add_widget(self._video, len(self.children))
         # Call update_canvas method when the size of the widget changes.
@@ -91,13 +91,13 @@ class SlideshowVideo(LabeledContent):
             if widget_ratio > 1:
                 # Determine required maximum dimension for the rotation
                 # transformation based on aspect ratios.
-                if widget_ratio > video_ratio and video_ratio > 1:
+                if widget_ratio >= video_ratio and video_ratio >= 1:
                     max_dim = self.width
-                elif widget_ratio <= video_ratio and video_ratio >= 1:
-                    max_dim = round(self.height*video_ratio)
-                elif widget_ratio >= video_ratio and video_ratio <= 1:
+                elif widget_ratio >= video_ratio and video_ratio < 1:
                     max_dim = self.height
-                else:  # widget_ratio < video_ratio and video_ratio < 1
+                elif widget_ratio < video_ratio and video_ratio >= 1:
+                    max_dim = round(self.height*video_ratio)
+                else:  # widget_ratio > video_ratio and video_ratio < 1
                     max_dim = round(self.width/video_ratio)
             # Determine maximum dimension for widget with portrait orientation.
             else:  # widget_ratio <= 1:
