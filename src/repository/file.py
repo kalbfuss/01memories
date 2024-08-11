@@ -227,6 +227,7 @@ class RepositoryFile:
 
         # Obtain meta data of all streams (video and audio).
         streams = ffmpeg.probe(path)['streams']
+        logging.debug(streams)
         # Find first video stream and return corresponding meta data.
         for data in streams:
             if data.get('codec_type') == 'video': break
@@ -241,16 +242,13 @@ class RepositoryFile:
         if data.get('tags') is None: return
 
         # Try to obtain rotation from metadata.
-        rotate = data['tags'].get('rotate')
-        if rotate is not None:
-            if rotate == "0":
-                self._rotation = 0
-            elif rotate == "90":
-                self._rotation = 270
-            elif rotate == "180":
-                self._rotation == 180
-            elif rotate == "270":
-                self._rotation = 90
+        if data.get('side_data_list') is not None:
+            rotation = data['side_data_list'][0].get('rotation')
+            if rotation is not None:
+                if rotation < 0: rotation = 360 + rotation
+                self._rotation = rotation
+
+        logging.debug(f"self._rotation: {self._rotation}")
 
         # Derive orientation from dimensions and rotation.
         if (self._width < self._height and (self.rotation == 0 or self.rotation == 180)) or (self._width > self._height and (self.rotation == 90 or self.rotation == 270)):
@@ -259,12 +257,13 @@ class RepositoryFile:
             self._orientation = RepositoryFile.ORIENTATION_LANDSCAPE
 
         # Try to extract creation time from metadata.
-        creation_date = data['tags'].get('creation_time')
-        if creation_date is not None:
-            try:
-                self._creation_date = datetime.strptime(creation_date, "%Y-%m-%dT%H:%M:%S.%fZ")
-            except ValueError:
-                logging.error(f"Invalid creation time format {creation_date}.")
+        if data.get('tags') is not None:
+            creation_date = data['tags'].get('creation_time')
+            if creation_date is not None:
+                try:
+                    self._creation_date = datetime.strptime(creation_date, "%Y-%m-%dT%H:%M:%S.%fZ")
+                except ValueError:
+                    logging.error(f"Invalid creation time format {creation_date}.")
 
     def _type_from_extension(self):
         """Determine file type based on file extension."""
