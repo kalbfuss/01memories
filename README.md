@@ -336,6 +336,7 @@ The following parameters are used to configure slideshows.
 | pause           | The delay in seconds until the next file is shown. The default is 300. |
 | resize          | The following resize modes are supported. The default is "fill".<br/> - *fit:* The slideshow content is zoomed to fit the screen as good as possible. Empty areas are filled with the background color.<br/> - *fill:* The slideshow content is zoomed and cropped to completely fill the screen. Note that images which do not have the same orientation as the screen are not zoomed and cropped, but only fit to the screen. |
 | rotation        | The angle by which slideshow content is rotated clockwise. Useful for picture frames/screens, which are installed in non-standard orientation. The default is 0.<br />**Note**: The rotation of labels is currently not supported. If you need labels, rotate the display in the X server configuration instead. |
+| sound           | Set to *false* if you want to disable sound during video playback. The default is *true". |
 
 #### Filter criteria
 

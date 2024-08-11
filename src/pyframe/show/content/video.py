@@ -33,7 +33,9 @@ class SlideshowVideo(LabeledContent):
         self._rotation = (file.rotation - config['rotation']) % 360
         self._bgcolor = config['bg_color']
         self._resize = config['resize']
+        # Create and add video widget.
         self._video = Video(source=file.source, state='stop', allow_stretch=True, options={'eos': 'loop'})
+        if not config['sound']: self._video.volume = 0
         self.add_widget(self._video, len(self.children))
         # Call update_canvas method when the size of the widget changes.
         self.bind(size=self.update_canvas)

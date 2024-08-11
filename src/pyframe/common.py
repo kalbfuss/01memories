@@ -46,6 +46,7 @@ DEFAULT_CONFIG = {
     'rotation': 0,
     'smart_limit': 10,
     'smart_time': 24,
+    'sound': True,
     'order': "name",
     'window_position': "auto",
     'window_size': "full"

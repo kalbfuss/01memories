@@ -1,7 +1,5 @@
 """Module providing common definitions."""
 
-import re
-
 
 class ConfigError(Exception):
     """Pyframe configuration error.
