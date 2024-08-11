@@ -14,8 +14,8 @@ export DISPLAY=:0
 # pure OpenGL ES devices such as the Radxa Zero 3W.
 export LD_LIBRARY_PATH=/usr/lib/gl4es
 
-# Select default video player. Valid values are "gstplayer", "ffmpeg"
-# or "ffpyplayer".
+# Select the video provder. Valid values are "gstplayer", "ffmpeg"
+# or "ffpyplayer". The default is "gstplayer".
 #export KIVY_VIDEO="ffpyplayer"
 
 # Make sure we use utf-8 encoding
