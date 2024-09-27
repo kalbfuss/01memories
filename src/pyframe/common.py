@@ -42,7 +42,7 @@ DEFAULT_CONFIG = {
     'label_padding': 0.03,
     'log_level': "warning",
     'log_dir': os.path.expanduser(f"~/.cache/01memories/log"),
-    'max_zoom': 1.2,
+    'max_zoom': 1.3,
     'pause': 300,
     'resize': "fill",
     'rotation': 0,
