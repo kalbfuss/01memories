@@ -34,6 +34,7 @@ app = None
 
 def signal_handler(sig, frame):
     """Close application after SIGINT and SIGTERM signals."""
+    global app
     Logger.warning(f"App: Signal '{signal.strsignal(sig)}' received. Preparing for safe exit.")
     app.close()
     stopTouchApp()
@@ -41,6 +42,7 @@ def signal_handler(sig, frame):
 
 def run_app():
     """Start slideshow."""
+    global app
     # Catch interrupt and term signals and exit gracefully.
     signal.signal(signal.SIGINT, signal_handler)
     signal.signal(signal.SIGTERM, signal_handler)
