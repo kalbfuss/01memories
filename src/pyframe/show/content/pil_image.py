@@ -41,18 +41,22 @@ class SlideshowImage(LabeledContent):
         self._bgcolor = config['bg_color']
         self._resize = config['resize']
         self._pause = config['pause']
-        self._zoom = 1.0
-        self._anchor = (0, 0)
         # Create nested image and scatter widgets.
         self._image = Image()
         self._scatter = Scatter()
         self._scatter.add_widget(self._image)
         self.add_widget(self._scatter, len(self.children))
-        # Create zoom animation.
-        self._anchor_pos = random.randint(0, 4)
-        self._animation = Animation(_zoom=1.2, duration=self._pause, t='in_out_sine')
-        self._animation.bind(on_progress=self.on_progress)
-        self._animation.start(self)
+
+        if(config['enable_animation']):
+            # Initial values for zoom animation.
+            self._zoom = 1.0
+            self._anchor = (0, 0)
+            self._anchor_pos = random.randint(0, 4)
+            # Create zoom animation.            
+            self._animation = Animation(_zoom=config['max_zoom'], duration=config['pause'], t='in_out_sine')
+            self._animation.bind(on_progress=self.on_progress)
+            self._animation.start(self)
+        
         # Call update_canvas method when the size of the widget changes.
         self.bind(size=self.update_canvas)
 
@@ -139,17 +143,47 @@ class SlideshowImage(LabeledContent):
         self._image.texture = texture
 
         # Set anchor for the zoom animation.
-        match self._anchor_pos:
-            # Widget center
-            case 0: self._anchor = (int(self.width/2), int(self.height/2))
-            # Lower left corner
-            case 1: self._anchor = (0, 0)
-            # Lower right corner
-            case 2: self._anchor = (self.width, 0)
-            # Upper right corner
-            case 3: self._anchor = (self.width, self.height)
-            # Upper left corner
-            case 4: self._anchor = (0, self.height)
+        if self._config['enable_animation']:
+            # Widget and image have same orientation.
+            if (widget_ratio >= 1 and image_ratio >= 1) or (widget_ratio < 1 and image_ratio < 1):
+                match self._anchor_pos:
+                    # Widget center
+                    case 0: self._anchor = (int(self.width/2), int(self.height/2))
+                    # Lower left corner
+                    case 1: self._anchor = (0, 0)
+                    # Lower right corner
+                    case 2: self._anchor = (self.width, 0)
+                    # Upper right corner
+                    case 3: self._anchor = (self.width, self.height)
+                    # Upper left corner
+                    case 4: self._anchor = (0, self.height)
+            # Widget has landscape and image portrait orientation.
+            elif widget_ratio >= 1 and image_ratio < 1:
+                match self._anchor_pos:
+                    # Widget center
+                    case 0: self._anchor = (int(self.width/2), int(self.height/2))
+                    # Lower left corner
+                    case 1: self._anchor = (int(self.width/2), 0)
+                    # Lower right corner
+                    case 2: self._anchor = (int(self.width/2), 0)
+                    # Upper right corner
+                    case 3: self._anchor = (int(self.width/2), self.height)
+                    # Upper left corner
+                    case 4: self._anchor = (int(self.width/2), self.height)
+            # Widget has portrait and image landscape orientation.
+            elif widget_ratio < 1 and image_ratio >= 1:
+                match self._anchor_pos:
+                    # Widget center
+                    case 0: self._anchor = (int(self.width/2), int(self.height/2))
+                    # Lower left corner
+                    case 1: self._anchor = (0, int(self.height/2))
+                    # Lower right corner
+                    case 2: self._anchor = (self.width, int(self.height/2))
+                    # Upper right corner
+                    case 3: self._anchor = (self.width, int(self.height/2))
+                    # Upper left corner
+                    case 4: self._anchor = (0, int(self.height/2))
+
 
         # Log debug information
 #        Logger.debug(f"Image uuid: {self._file.uuid}")

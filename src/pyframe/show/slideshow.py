@@ -28,7 +28,7 @@ class Slideshow(AnchorLayout):
     """
 
     # Required and valid configuration parameters
-    CONF_REQ_KEYS = {'bg_color', 'label_content', 'label_duration', 'label_font_size', 'label_mode', 'label_padding', 'pause', 'resize', 'rotation'} | Index.CRIT_REQ_KEYS
+    CONF_REQ_KEYS = {'bg_color', 'enable_animation', 'label_content', 'label_duration', 'label_font_size', 'label_mode', 'label_padding', 'max_zoom', 'pause', 'resize', 'rotation'} | Index.CRIT_REQ_KEYS
     CONF_VALID_KEYS = {'always_excluded_tags', 'sound'} | CONF_REQ_KEYS | Index.CRIT_VALID_KEYS
 
     def __init__(self, name, index, config):

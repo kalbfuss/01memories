@@ -100,7 +100,7 @@ class App(kivy.app.App, Controller):
     """Pyframe slideshow application."""
 
     # Required and valid configuration parameters
-    CONF_REQ_KEYS = {'display_mode', 'display_state', 'display_timeout', 'enable_exception_handler', 'enable_mqtt', 'enable_logging', 'enable_scheduler', 'index', 'log_level', 'log_dir', 'repositories', 'slideshows', 'window_position', 'window_size'} | Slideshow.CONF_REQ_KEYS
+    CONF_REQ_KEYS = {'display_mode', 'display_state', 'display_timeout', 'enable_animation', 'enable_exception_handler', 'enable_mqtt', 'enable_logging', 'enable_scheduler', 'index', 'log_level', 'log_dir', 'max_zoom', 'repositories', 'slideshows', 'window_position', 'window_size'} | Slideshow.CONF_REQ_KEYS
     CONF_VALID_KEYS = {'cache', 'index_update_at', 'index_update_interval', 'mqtt', 'schedule', 'sound' } | CONF_REQ_KEYS | Slideshow.CONF_VALID_KEYS
 
 

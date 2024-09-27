@@ -28,6 +28,7 @@ DEFAULT_CONFIG = {
     'display_mode': "static",
     'display_state': "on",
     'display_timeout': 300,
+    'enable_animation': False,
     'enable_exception_handler': False,
     'enable_logging': True,
     'enable_scheduler': True,
@@ -41,6 +42,7 @@ DEFAULT_CONFIG = {
     'label_padding': 0.03,
     'log_level': "warning",
     'log_dir': os.path.expanduser(f"~/.cache/01memories/log"),
+    'max_zoom': 1.2,
     'pause': 300,
     'resize': "fill",
     'rotation': 0,
@@ -239,6 +241,7 @@ def _load_config():
         if os.path.isfile(path): break
 
     # Load configuration from yaml file.
+    logging.info(f"Configuration: Loading configuration from file '{path}'.")
     with open(path, 'r', encoding='utf8') as config_file:
         config2 = yaml.safe_load(config_file)
 
