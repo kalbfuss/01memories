@@ -1,11 +1,14 @@
 """Module providing slideshow image class using PIL for image loading and manipulation."""
 
-from kivy.graphics import PushMatrix, PopMatrix, Rotate, Color, Rectangle
+import random
+
+from kivy.animation import Animation
+from kivy.graphics import Color, Rectangle
 from kivy.graphics.texture import Texture
+from kivy.graphics.transformation import Matrix
 from kivy.logger import Logger
 from kivy.uix.image import Image
-from kivy.uix.label import Label
-from kivy.uix.widget import Widget
+from kivy.uix.scatter import Scatter
 
 from PIL import Image as PilImage
 
@@ -37,10 +40,30 @@ class SlideshowImage(LabeledContent):
         self._rotation = (config['rotation'] - file.rotation) % 360
         self._bgcolor = config['bg_color']
         self._resize = config['resize']
+        self._pause = config['pause']
+        self._zoom = 1.0
+        self._anchor = (0, 0)
+        # Create nested image and scatter widgets.
         self._image = Image()
-        self.add_widget(self._image, len(self.children))
+        self._scatter = Scatter()
+        self._scatter.add_widget(self._image)
+        self.add_widget(self._scatter, len(self.children))
+        # Create zoom animation.
+        self._anchor_pos = random.randint(0, 4)
+        self._animation = Animation(_zoom=1.2, duration=self._pause, t='in_out_sine')
+        self._animation.bind(on_progress=self.on_progress)
+        self._animation.start(self)
         # Call update_canvas method when the size of the widget changes.
         self.bind(size=self.update_canvas)
+
+
+    def on_progress(self, *args):
+        """Adjust zoom level for the next animation frame."""
+        # Reset transformation matrix
+        self._scatter.transform = Matrix().identity()
+        # Apply new zoom factor
+        matrix = Matrix().scale(self._zoom, self._zoom, self._zoom)
+        self._scatter.apply_transform(matrix, anchor=self._anchor)        
 
 
     def update_canvas(self, *args):
@@ -114,6 +137,19 @@ class SlideshowImage(LabeledContent):
         texture.blit_buffer(pil_image.tobytes(), colorfmt='rgb', bufferfmt='ubyte')
         texture.flip_vertical()
         self._image.texture = texture
+
+        # Set anchor for the zoom animation.
+        match self._anchor_pos:
+            # Widget center
+            case 0: self._anchor = (int(self.width/2), int(self.height/2))
+            # Lower left corner
+            case 1: self._anchor = (0, 0)
+            # Lower right corner
+            case 2: self._anchor = (self.width, 0)
+            # Upper right corner
+            case 3: self._anchor = (self.width, self.height)
+            # Upper left corner
+            case 4: self._anchor = (0, self.height)
 
         # Log debug information
 #        Logger.debug(f"Image uuid: {self._file.uuid}")
