@@ -29,9 +29,12 @@ from .mqtt import MqttInterface
 from ..common import _create_repositories, _configure_logging, _load_config, _load_index
 
 
+app = None
+
+
 def signal_handler(sig, frame):
     """Close application after SIGINT and SIGTERM signals."""
-    Logger.warn(f"App: Signal '{signal.strsignal(sig)}' received. Preparing for safe exit.")
+    Logger.warning(f"App: Signal '{signal.strsignal(sig)}' received. Preparing for safe exit.")
     app.close()
     stopTouchApp()
 
