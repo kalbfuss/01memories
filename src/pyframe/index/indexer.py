@@ -24,7 +24,9 @@ def run_indexer(uuids, rebuild):
     # Catch interrupt and term signals and exit gracefully.
     signal.signal(signal.SIGINT, signal_handler)
     signal.signal(signal.SIGTERM, signal_handler)
-    # Run slideshow.
+    # Disable loading of GL4ES library.
+    #del os.environ['LD_LIBRARY_PATH']
+    # Run file indexer.
     indexer = Indexer(uuids, rebuild)
     indexer.run()
     # Clean up and exit.
