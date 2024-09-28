@@ -328,11 +328,13 @@ The following parameters are used to configure slideshows.
 | Parameter       | Description |
 | :-------------- | :---------- |
 | bg_color        | The background color used to fill empty areas, provided as *[r, g, b]*. The default is *[1, 1, 1]* (white).|
+| enable_animation | Set to *false* in order to disable the zoom animation of images. The default is *true*. |
 | label_content   | The following content based on file meta data is supported. The default is "full".<br/> - *description:* only image description<br/> - *short:* image description, location, and creation date<br/> - *full:* image description, location, creation date and tags, file name and repository |
 | label_duration  | Duration in seconds for which labels are shown. The default is 60. |
 | label_font_size |The relative font size of labels, expressed as percentage of the shortest file dimension. The default is 0.08.|
 | label_mode|The following label modes are supported. The default is "off".<br/> - *auto:* Labels are shown at the beginning and end of a file for the *label_duration*.<br/> - *off:* Labels are never shown. <br/> - *on:* Labels are always shown.|
 | label_padding   | The relative padding of labels, expressed as percentage of the shortest file dimension. The default is 0.03.|
+| max_zoom        | The maximum zoom factor used in the zoom animation of images. The default is 1.3. |
 | pause           | The delay in seconds until the next file is shown. The default is 300. |
 | resize          | The following resize modes are supported. The default is "fill".<br/> - *fit:* The slideshow content is zoomed to fit the screen as good as possible. Empty areas are filled with the background color.<br/> - *fill:* The slideshow content is zoomed and cropped to completely fill the screen. Note that images which do not have the same orientation as the screen are not zoomed and cropped, but only fit to the screen. |
 | rotation        | The angle by which slideshow content is rotated clockwise. Useful for picture frames/screens, which are installed in non-standard orientation. The default is 0.<br />**Note**: The rotation of labels is currently not supported. If you need labels, rotate the display in the X server configuration instead. |
