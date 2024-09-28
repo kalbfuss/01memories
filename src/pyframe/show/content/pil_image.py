@@ -51,7 +51,6 @@ class SlideshowImage(LabeledContent):
             # Initial values for zoom animation.
             self._zoom = 1.0
             self._anchor = (0, 0)
-            self._anchor_pos = random.randint(0, 4)
             # Create zoom animation.            
             self._animation = Animation(_zoom=config['max_zoom'], duration=config['pause'], t='in_out_sine')
             self._animation.bind(on_progress=self.on_progress)
@@ -146,43 +145,13 @@ class SlideshowImage(LabeledContent):
         if self._config['enable_animation']:
             # Widget and image have same orientation.
             if (widget_ratio >= 1 and image_ratio >= 1) or (widget_ratio < 1 and image_ratio < 1):
-                match self._anchor_pos:
-                    # Widget center
-                    case 0: self._anchor = (int(self.width/2), int(self.height/2))
-                    # Lower left corner
-                    case 1: self._anchor = (0, 0)
-                    # Lower right corner
-                    case 2: self._anchor = (self.width, 0)
-                    # Upper right corner
-                    case 3: self._anchor = (self.width, self.height)
-                    # Upper left corner
-                    case 4: self._anchor = (0, self.height)
+                self._anchor = (random.randint(0, self.width), random.randint(int(self.height/2), self.height))
             # Widget has landscape and image portrait orientation.
             elif widget_ratio >= 1 and image_ratio < 1:
-                match self._anchor_pos:
-                    # Widget center
-                    case 0: self._anchor = (int(self.width/2), int(self.height/2))
-                    # Lower left corner
-                    case 1: self._anchor = (int(self.width/2), 0)
-                    # Lower right corner
-                    case 2: self._anchor = (int(self.width/2), 0)
-                    # Upper right corner
-                    case 3: self._anchor = (int(self.width/2), self.height)
-                    # Upper left corner
-                    case 4: self._anchor = (int(self.width/2), self.height)
+                self._anchor = (int(self.width/2), random.randint(int(self.height/2), self.height))
             # Widget has portrait and image landscape orientation.
             elif widget_ratio < 1 and image_ratio >= 1:
-                match self._anchor_pos:
-                    # Widget center
-                    case 0: self._anchor = (int(self.width/2), int(self.height/2))
-                    # Lower left corner
-                    case 1: self._anchor = (0, int(self.height/2))
-                    # Lower right corner
-                    case 2: self._anchor = (self.width, int(self.height/2))
-                    # Upper right corner
-                    case 3: self._anchor = (self.width, int(self.height/2))
-                    # Upper left corner
-                    case 4: self._anchor = (0, int(self.height/2))
+                self._anchor = (random.randint(0, self.width), int(self.height/2))
 
 
         # Log debug information
