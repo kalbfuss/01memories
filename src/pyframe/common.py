@@ -28,7 +28,7 @@ DEFAULT_CONFIG = {
     'display_mode': "static",
     'display_state': "on",
     'display_timeout': 300,
-    'enable_animation': False,
+    'enable_animation': True,
     'enable_exception_handler': False,
     'enable_logging': True,
     'enable_scheduler': True,
