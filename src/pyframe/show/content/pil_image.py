@@ -90,11 +90,11 @@ class SlideshowImage(LabeledContent):
 
         # Rotate image as required.
         if self._rotation == 90:
-            pil_image = pil_image.transpose(PilImage.Transpose.ROTATE_90)
+            pil_image = pil_image.transpose(PilImage.Transpose.ROTATE_270)
         elif self._rotation == 180:
             pil_image = pil_image.transpose(PilImage.Transpose.ROTATE_180)
         elif self._rotation == 270:
-            pil_image = pil_image.transpose(PilImage.Transpose.ROTATE_270)
+            pil_image = pil_image.transpose(PilImage.Transpose.ROTATE_90)
         
         # Determine aspect ratios of image slideshow widget (this widget)
         # and image.
