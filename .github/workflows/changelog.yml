@@ -11,7 +11,7 @@ jobs:
       - name: "Checkout code"
         uses: actions/checkout@v2
         with:
-          ref: main
+          token: ${{ secrets.GITHUB_TOKEN }}        
       - name: "✏️ Generate release changelog"
         uses: janheinrichmerker/action-github-changelog-generator@v2.3
         with:
@@ -21,3 +21,4 @@ jobs:
         with:
           commit_message: "Update Changelog for PR"
           file_pattern: CHANGELOG.md
+          token: ${{ secrets.GITHUB_TOKEN }}        
