@@ -1,10 +1,6 @@
 name: Changelog
 on:
   workflow_dispatch:
-    inputs:
-      user: kalbfuss
-      project: 01memories
-      output: CHANGELOG.md
   release:
     types:
       - created
