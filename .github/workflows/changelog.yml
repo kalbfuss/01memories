@@ -21,4 +21,5 @@ jobs:
         with:
           commit_message: "Update Changelog for PR"
           file_pattern: CHANGELOG.md
+          skip_checkout: true
           token: ${{ secrets.GITHUB_TOKEN }}        
