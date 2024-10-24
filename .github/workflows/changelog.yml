@@ -16,5 +16,4 @@ jobs:
         REPO_NAME: 'kalbfuss/01memories'
         ACCESS_TOKEN: ${{secrets.GITHUB_TOKEN}}
         PATH: 'CHANGELOG.md'
-        COMMIT_MESSAGE: 'docs(CHANGELOG): update release notes'
-        TYPE: 'feat:Feature,fix:Bug Fixes,docs:Documentation,refactor:Refactor,perf:Performance Improvements'
+        COMMIT_MESSAGE: 'Updated release notes.'
