@@ -8,7 +8,16 @@ jobs:
   changelog:
     runs-on: ubuntu-latest
     steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v2
+        with:
+          ref: main
       - name: "✏️ Generate release changelog"
         uses: janheinrichmerker/action-github-changelog-generator@v2.3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: "Commit changelog"
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Update Changelog for PR"
+          file_pattern: CHANGELOG.md
