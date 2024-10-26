@@ -1,0 +1,28 @@
+name: Changelog
+on:
+  workflow_dispatch:
+  release:
+    types:
+      - created
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+    permissions:
+      # Give the default GITHUB_TOKEN write permission to commit and push the
+      # added or changed files to the repository.
+      contents: write
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}        
+      - name: "✏️ Generate release changelog"
+        uses: janheinrichmerker/action-github-changelog-generator@v2.3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: "Commit changelog"
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Updated changelog."
+          file_pattern: CHANGELOG.md
+          token: ${{ secrets.GITHUB_TOKEN }}        
