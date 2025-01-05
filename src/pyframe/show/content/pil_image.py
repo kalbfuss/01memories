@@ -59,7 +59,6 @@ class SlideshowImage(LabeledContent):
         # Call update_canvas method when the size of the widget changes.
         self.bind(size=self.update_canvas)
 
-
     def on_progress(self, *args):
         """Adjust zoom level for the next animation frame."""
         # Reset transformation matrix
@@ -68,7 +67,6 @@ class SlideshowImage(LabeledContent):
         matrix = Matrix().scale(self._zoom, self._zoom, self._zoom)
         self._scatter.apply_transform(matrix, anchor=self._anchor)     
 
-
     def stop(self):
         """Stop playing of content."""
         # Stop animation if active.
@@ -76,7 +74,6 @@ class SlideshowImage(LabeledContent):
             self._animation.stop(self)
         # Rely on super class method for anything else.
         super().stop()
-
 
     def update_canvas(self, *args):
         """Update canvas when the size of the widget changes."""
