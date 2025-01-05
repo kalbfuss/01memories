@@ -51,11 +51,11 @@ class SlideshowImage(LabeledContent):
             # Initial values for zoom animation.
             self._zoom = 1.0
             self._anchor = (0, 0)
-            # Create zoom animation.            
+            # Create zoom animation.  
             self._animation = Animation(_zoom=config['max_zoom'], duration=config['pause'], t='in_out_sine')
             self._animation.bind(on_progress=self.on_progress)
             self._animation.start(self)
-        
+    
         # Call update_canvas method when the size of the widget changes.
         self.bind(size=self.update_canvas)
 
@@ -66,7 +66,16 @@ class SlideshowImage(LabeledContent):
         self._scatter.transform = Matrix().identity()
         # Apply new zoom factor
         matrix = Matrix().scale(self._zoom, self._zoom, self._zoom)
-        self._scatter.apply_transform(matrix, anchor=self._anchor)        
+        self._scatter.apply_transform(matrix, anchor=self._anchor)     
+
+
+    def stop(self):
+        """Stop playing of content."""
+        # Stop animation if active.
+        if self._animation is not None:
+            self._animation.stop(self)
+        # Rely on super class method for anything else.
+        super().stop()
 
 
     def update_canvas(self, *args):
@@ -95,7 +104,7 @@ class SlideshowImage(LabeledContent):
             pil_image = pil_image.transpose(PilImage.Transpose.ROTATE_180)
         elif self._rotation == 270:
             pil_image = pil_image.transpose(PilImage.Transpose.ROTATE_90)
-        
+    
         # Determine aspect ratios of image slideshow widget (this widget)
         # and image.
         widget_ratio = self.width/self.height
@@ -121,7 +130,7 @@ class SlideshowImage(LabeledContent):
                 self._image.fit_mode = "contain"
                 width = self.width
                 height = int(self.width/image_ratio)
-        
+    
         # Default is to fit the image to the canvas
         else:  # self._resize == "fit"
             self._image.fit_mode = "contain"
