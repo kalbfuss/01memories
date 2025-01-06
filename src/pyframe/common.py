@@ -37,7 +37,6 @@ DEFAULT_CONFIG = {
     'enable_scheduler': True,
     'enable_mqtt': True,
     'index': os.path.expanduser(f"~/.cache/01memories/index.sqlite"),
-    'index_update_interval': 0,
     'label_mode': "off",
     'label_content': "full",
     'label_duration': 60,
