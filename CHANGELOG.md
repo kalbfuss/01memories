@@ -1,5 +1,21 @@
 # Changelog
 
+## [Unreleased](https://github.com/kalbfuss/01memories/tree/HEAD)
+
+[Full Changelog](https://github.com/kalbfuss/01memories/compare/v0.0.32...HEAD)
+
+**Fixed bugs:**
+
+- Display not turned off under Wayland [\#5](https://github.com/kalbfuss/01memories/issues/5)
+
+## [v0.0.32](https://github.com/kalbfuss/01memories/tree/v0.0.32) (2025-01-06)
+
+[Full Changelog](https://github.com/kalbfuss/01memories/compare/v0.0.31...v0.0.32)
+
+**Fixed bugs:**
+
+- Zoom animation of photos not stopped during pause [\#4](https://github.com/kalbfuss/01memories/issues/4)
+
 ## [v0.0.31](https://github.com/kalbfuss/01memories/tree/v0.0.31) (2024-10-03)
 
 [Full Changelog](https://github.com/kalbfuss/01memories/compare/v0.0.30...v0.0.31)
