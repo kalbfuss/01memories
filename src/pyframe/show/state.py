@@ -28,9 +28,6 @@ def enum_representer(dumper, data):
     """
     return dumper.represent_scalar('!enum', f"{data.__class__.__name__}.{data.name}")
 
-yaml.add_representer(DISPLAY_STATE, enum_representer)
-yaml.add_representer(PLAY_STATE, enum_representer)
-
 def enum_constructor(loader, node):
     """Construct enumeration from string.
     
@@ -41,10 +38,13 @@ def enum_constructor(loader, node):
     :return: enumeration
     :rtype: enum
     """
-    value = str(loader.construct_scalar(node))
+    value = loader.construct_scalar(node)
+    Logger.info(f"State: Constructing enumeration value from '{value}.'")
     enum_name, member_name = value.split('.')
-    return globals()[emum_name][member_name]
+    return globals()[enum_name][member_name]
 
+yaml.add_representer(DISPLAY_STATE, enum_representer)
+yaml.add_representer(PLAY_STATE, enum_representer)
 yaml.add_constructor('!enum', enum_constructor)
 
 
@@ -90,25 +90,6 @@ class SavedState:
         except OSError as e:
             Logger.error(f"State: An error occurred while deleting the state file: {e}")
 
-
-    def __repr__(self):
-        """Return string representation of state dictionary.
-        
-        :return: string representation of state dictionary
-        :rtype: str
-        """
-        return self._state.__repr__()
-
-
-    def __str__(self):
-        """Return YAML representation of state dictionary.
-        
-        :return: YAML representation of state dictionary
-        :rtype: str
-        """
-        return yaml.dump(self._state)
-
-
     def restore_state(self, max_age=MAX_AGE):
         """Restore saved state.
         
@@ -125,7 +106,8 @@ class SavedState:
         try:
             with open(self._filename, "r") as file:
                 Logger.info(f"State: Loading saved state from file '{self._filename}'.")
-                self._state = yaml.safe_load(file)
+                self._state = yaml.load(file, Loader=yaml.Loader)
+                Logger.info(f"State: The following state was restored: {self._state}")
         except OSError as e:
             Logger.error(f"State: An error occurred while reading the state file: {e}")
         except yaml.YAMLError as e:
@@ -138,7 +120,6 @@ class SavedState:
                 Logger.info(f"State: Saved state is older than {max_age} seconds and will be discarded.")
                 self._state = dict()
 
-
     def save_state(self):
         """Save current state."""
         # Update timestamp.
@@ -146,11 +127,10 @@ class SavedState:
         # Save state to YAML file.
         try:
             with open(self._filename, "w") as file:
-                Logger.debug(f"State: Saving state to file '{self._filename}'.")
+                Logger.info(f"State: Saving state to file '{self._filename}'.")
                 yaml.dump(self._state, file)
         except OSError as e:
             Logger.error(f"State: An error occurred while writing the state file: {e}")
-
 
     def _update_value(self, state):
         """ Update current state.
@@ -164,8 +144,7 @@ class SavedState:
         """
         self._state.update(state)
         self.save_state()
-
-    
+  
     @property
     def _display_state(self):
         """Return current display state.
@@ -184,7 +163,6 @@ class SavedState:
         :type value: str
         """
         self._update_value({'display_state': value})
-
 
     @property
     def _play_state(self):
@@ -205,7 +183,6 @@ class SavedState:
         """
         self._update_value({'play_state': value})
 
-
     @property
     def _slideshow(self):
         """Return current slideshow.
@@ -215,7 +192,6 @@ class SavedState:
         """
         return self._state.get('slideshow')
 
-
     @_slideshow.setter
     def _slideshow(self, value):
         """Set new slideshow and save it.
@@ -224,7 +200,6 @@ class SavedState:
         :type value: str
         """
         self._update_value({'slideshow': value})
-
 
     @property
     def state(self):
