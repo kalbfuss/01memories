@@ -3,12 +3,14 @@
 import copy
 import kivy.app
 import logging
+import os
 import os.path
 import repository.local
 import repository.webdav
 import subprocess
 import signal
 import sys
+import tempfile
 import time
 import traceback
 import yaml
@@ -21,10 +23,11 @@ from kivy.core.window import Window
 from kivy.clock import Clock
 from kivy.logger import Logger, LOG_LEVELS
 
-from .slideshow import Slideshow
-from .scheduler import Scheduler
 from .controller import Controller, DISPLAY_MODE, DISPLAY_STATE, PLAY_STATE
 from .mqtt import MqttInterface
+from .scheduler import Scheduler
+from .slideshow import Slideshow
+from .state import SavedState
 
 from ..common import _create_repositories, _configure_logging, _load_config, _load_index
 
@@ -101,7 +104,7 @@ class ExceptionHandler(kivy.base.ExceptionHandler):
         return ExceptionManager.PASS
 
 
-class App(kivy.app.App, Controller):
+class App(kivy.app.App, Controller, SavedState):
     """Pyframe slideshow application."""
 
     # Required and valid configuration parameters
@@ -214,6 +217,9 @@ class App(kivy.app.App, Controller):
         self._scheduler = None
         self._mqtt_interface = None
         self._play_state = PLAY_STATE.STOPPED
+
+        # Attempt to restore saved state.
+        self.restore_state(max_age=None)
 
         # Register 'state_change' event, which is fired upon content and
         # controller state changes.
