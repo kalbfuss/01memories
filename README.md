@@ -207,6 +207,8 @@ The following parameters are used to configure the application.
 | Parameter       | Description                                                  |
 | :-------------- | :----------------------------------------------------------- |
 | display_mode    | The following display modes are supported. The default is "static".<br/>- *static*: The display is always on if a slideshow is paused or playing and off if a slideshow is stopped.<br/> - *motion*: The display is turned on and the slideshow starts playing in the presence of motion (i.e. *touch* events). The slideshow is paused and the display turned off in the absence of motion after the display timeout interval. |
+| display_on_command  | External command to turn the display on. The default is to automatically detect the command during startup. | 
+| display_off_command | Exteral command to turn the display off. The default is to automatically detect the command during startup. | 
 | display_timeout | The time in seconds after which the slideshow is paused and screen turned off in the absence of motion. The default is 300 seconds. |
 | window_position | The position of the window with coordinates of the upper left corner provided as *[x, y]*. A value of "auto" centers the window on the screen. The default is "auto". The setting is ignored if the application is run in full screen mode. |
 | window_size     | The size of the window provided as *[width, height]*. A value of "full" enables full screen mode. The default is "full". |
