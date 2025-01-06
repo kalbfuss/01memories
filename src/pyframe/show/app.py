@@ -105,7 +105,7 @@ class App(kivy.app.App, Controller):
     """Pyframe slideshow application."""
 
     # Required and valid configuration parameters
-    CONF_REQ_KEYS = {'display_mode', 'display_state', 'display_timeout', 'enable_animation', 'enable_exception_handler', 'enable_mqtt', 'enable_logging', 'enable_scheduler', 'index', 'log_level', 'log_dir', 'max_zoom', 'repositories', 'slideshows', 'window_position', 'window_size'} | Slideshow.CONF_REQ_KEYS
+    CONF_REQ_KEYS = {'display_mode', 'display_off_command', 'display_on_command', 'display_state', 'display_timeout', 'enable_animation', 'enable_exception_handler', 'enable_mqtt', 'enable_logging', 'enable_scheduler', 'index', 'log_level', 'log_dir', 'max_zoom', 'repositories', 'slideshows', 'window_position', 'window_size'} | Slideshow.CONF_REQ_KEYS
     CONF_VALID_KEYS = {'cache', 'index_update_at', 'index_update_interval', 'mqtt', 'schedule', 'sound' } | CONF_REQ_KEYS | Slideshow.CONF_VALID_KEYS
 
 
@@ -394,9 +394,11 @@ class App(kivy.app.App, Controller):
         # Return if already on.
         if self._display_state == DISPLAY_STATE.ON: return
         Logger.info("Controller: Turning display on.")
-        # Turn display on on Linux with X server.
-        subprocess.run("/usr/bin/xset dpms force on", shell=True,  stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL)
+        # Turn display on if respective command is configured.
+        if self._config['display_on_command'] is not None:
+            cp = subprocess.run(self._config['display_on_command'], shell=True, text=True, capture_output=True)
+            if cp.stderr is not None and cp.stderr != "":
+                Logger.error(f"Controller: The call of '{self._config['display_on_command']}' produced the following error message: {cp.stderr}")
         # Raise window to top (just in case) and make full screen again.
 #        Window.raise_window()
 #        if self._config['window_size'] == "full":
@@ -410,11 +412,11 @@ class App(kivy.app.App, Controller):
         # Return if already off.
         if self._display_state == DISPLAY_STATE.OFF: return
         Logger.info("Controller: Turning display off.")
-        # Turn display off on Linux with X server.
-        #subprocess.run("/usr/bin/xset dpms force off", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        cp = subprocess.run("/usr/bin/xset dpms force off", shell=True, text=True, capture_output=True)
-        if cp.stderr is not None and cp.stderr != "":
-            Logger.error(f"Controller: The call of '/usr/bin/xset dpms force off' produced the following error message: {cp.stderr}")
+        # Turn display off if respective command is configured.
+        if self._config['display_off_command'] is not None:
+            cp = subprocess.run(self._config['display_off_command'], shell=True, text=True, capture_output=True)
+            if cp.stderr is not None and cp.stderr != "":
+                Logger.error(f"Controller: The call of '{self._config['display_off_command']}' produced the following error message: {cp.stderr}")
         # Update display state.
         self._display_state = DISPLAY_STATE.OFF
         self.dispatch('on_state_change')
