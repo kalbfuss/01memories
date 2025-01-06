@@ -4,6 +4,7 @@ import copy
 import logging
 import os
 import os.path
+import subprocess
 import sys
 import yaml
 
@@ -27,6 +28,8 @@ DEFAULT_CONFIG = {
     'direction': "ascending",
     'display_mode': "static",
     'display_state': "on",
+    'display_off_command': None,
+    'display_on_command' : None,
     'display_timeout': 300,
     'enable_animation': True,
     'enable_exception_handler': False,
@@ -218,6 +221,64 @@ def _create_repositories(config, index):
         raise Exception(f"An exception occurred while creating the cache file directory '{cache_dir}': {e}")
 
 
+def _detect_display_commands(config):
+    """Detect commands for controlling the display.
+    
+    Attempts to auto-detect viable display control commands for the current 
+    system. Commands are system-dependent and differ for the X11 system and
+    Wayland. In Wayland, commands further depend on the type of compositor used.
+
+    Commands are stored under the configuration keys 'display_on_command' and
+    'display_off_command'. Detection is skipped if respective commands are 
+    defined in the configuration file. Values are set to None if no viable 
+    commands are detected.
+    """
+
+    # Skip auto-detection if commands have been configured before (e.g. in
+    # the configuration file).
+    if config['display_on_command'] is not None or config['display_off_command'] is not None:
+        logging.debug(f"Configuration: Skipping detection of display commands as they are defined in the configuration file.")
+        return
+
+    # Available system/command combinations. Extend as required.
+    display_commands = {
+        'wayland-gnome': {
+            'on': "busctl --user set-property org.gnome.Mutter.DisplayConfig /org/gnome/Mutter/DisplayConfig org.gnome.Mutter.DisplayConfig PowerSaveMode i 0",
+            'off': "busctl --user set-property org.gnome.Mutter.DisplayConfig /org/gnome/Mutter/DisplayConfig org.gnome.Mutter.DisplayConfig PowerSaveMode i 1",
+        },
+        'x11': {
+            'on': "xset dpms force on",
+            'off': "xset dpms force off"
+        }
+    }
+    
+    logging.debug(f"Configuration: Testing display commands.")
+
+    # Iterate through system/command combinations.
+    for system in display_commands:
+        # Try to run 'display on' command.
+        cp = subprocess.run(display_commands[system]['on'], shell=True)
+        
+        # If successful, configure respective commands.
+        if cp.returncode == 0:
+            config['display_on_command'] = display_commands[system]['on']
+            config['display_off_command'] = display_commands[system]['off']
+            
+            logging.info(f"Configuration: 'Display on' command for system '{system}' completed successfully.")
+            logging.debug(f"Configuration: Selecting the following commands for display control:")
+            logging.debug(f"Configuration:   display_on_command: {config['display_on_command']}")
+            logging.debug(f"Configuration:   display_off_command: {config['display_off_command']}")
+            
+            return
+        else:
+            logging.debug(f"Configuration: 'Display on' command for system '{system}' failed during testing.")
+
+    # Disable display commands if no viable commands have been detected.
+    logging.warning(f"Configuration: No viable display commands found for the system. Disabling display control.")
+    config['display_on_command'] = None
+    config['display_off_command'] = None
+            
+
 def _load_config():
     """Load application configuration.
 
@@ -246,8 +307,11 @@ def _load_config():
         config2 = yaml.safe_load(config_file)
 
     # Copy and update default configuration.
-    config = copy.deepcopy(DEFAULT_CONFIG)
+    config = copy.deepcopy(DEFAULT_CONFIG)    
     config.update(config2)
+
+    # Detect display commands if necessary.
+    _detect_display_commands(config)
 
     logging.debug(f"Configuration: Configuration = {config}")
     return config
