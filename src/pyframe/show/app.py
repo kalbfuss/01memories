@@ -174,8 +174,9 @@ class App(kivy.app.App, Controller, SavedState):
         # Convert from boolean to "on" (True) and "off" (False) if necessary.
         # This is a pecularity of the YAML 1.1 standard, which interprets "on"
         # and "off" as boolean values.
-        map = {True: "on", False: "off", "on": "on", "off": "off"}
-        display_state = map[config['display_state']]
+        if self._display_state is not None:
+            map = {True: "on", False: "off", "on": "on", "off": "off"}
+            display_state = map[config['display_state']]
 
         # Initialize display timeout, state and mode.
         self._display_timeout = config['display_timeout']
@@ -216,10 +217,10 @@ class App(kivy.app.App, Controller, SavedState):
         self._index = None
         self._scheduler = None
         self._mqtt_interface = None
-        self._play_state = PLAY_STATE.STOPPED
 
         # Attempt to restore saved state.
         self.restore_state(max_age=None)
+        if self._play_state is None: self._play_state = PLAY_STATE.STOPPED
 
         # Register 'state_change' event, which is fired upon content and
         # controller state changes.
@@ -236,11 +237,13 @@ class App(kivy.app.App, Controller, SavedState):
         self._index = _load_index(self._config)
         # Create repositories from configuration.
         _create_repositories(self._config, self._index)
-        # Create slideshows.
+        # Create slideshows from configuration.
         self._create_slideshows()
 
-        # Make first slideshow the main root widget.
-        self.root = next(iter(self._slideshows.values()))
+        # Try to recover current slideshow from saved state. Make first 
+        # slideshow the current slideshow otherwise.
+        self.root = self._slideshows.get(self._slideshow, next(iter(self._slideshows.values())))
+        self._slideshow = self.root.name
 
         # Create mqtt interface if configured and activated.
         value = self._config.get('enable_mqtt')
@@ -576,6 +579,7 @@ class App(kivy.app.App, Controller, SavedState):
             Window.add_widget(new_root)
             Window.remove_widget(self.root)
             self.root = new_root
+            self._slideshow = new_root.name
             self.play_state = cur_play_state
             self.dispatch('on_state_change')
 
