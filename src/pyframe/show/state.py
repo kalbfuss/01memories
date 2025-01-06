@@ -2,15 +2,50 @@
 
 import datetime
 import os
+import tempfile
 import yaml
 
 from datetime import datetime
 
 from kivy.logger import Logger
 
+from .controller import DISPLAY_STATE, PLAY_STATE
+
 
 # Maximum age of state file in seconds. State files which are older will be ignored.
 MAX_AGE = 120
+
+
+def enum_representer(dumper, data):
+    """Represent enumeration as string.
+    
+    :param dumper: YAML dumper
+    :type dumper: yaml.Dumper
+    :param data: enumeration
+    :type data: enum
+    :return: YAML representation of enumeration
+    :rtype: yaml.Node
+    """
+    return dumper.represent_scalar('!enum', f"{data.__class__.__name__}.{data.name}")
+
+yaml.add_representer(DISPLAY_STATE, enum_representer)
+yaml.add_representer(PLAY_STATE, enum_representer)
+
+def enum_constructor(loader, node):
+    """Construct enumeration from string.
+    
+    :param loader: YAML loader
+    :type loader: yaml.Loader
+    :param node: YAML node
+    :type node: yaml.Node
+    :return: enumeration
+    :rtype: enum
+    """
+    value = str(loader.construct_scalar(node))
+    enum_name, member_name = value.split('.')
+    return globals()[emum_name][member_name]
+
+yaml.add_constructor('!enum', enum_constructor)
 
 
 class SavedState:
@@ -29,7 +64,7 @@ class SavedState:
     state (dict) - Current state (includes all previous items)
     """
 
-    def __init__(self, filename, max_age=MAX_AGE):
+    def __init__(self):
         """Initialize state instance.
         
         If the file specified by filename exists and the timestamp is younger
@@ -41,22 +76,19 @@ class SavedState:
         :type max_age: int
         """
         self._state = dict()
-        self._filename = filename
-        
-        # Attempt to restore
-        self.restore_state(max_age)
-
+        self._filename = os.path.join(tempfile.gettempdir(), f"pyframe.state.{os.getuid()}")
+    
 
     def __del__(self):
         """Destroy state instance.
         
-        Deletes the YAML file storing the state. The file only remains in case of
-        unplanned termination.
+        Deletes the YAML file storing the state. The file only remains in case 
+        of unplanned termination.
         """
         try:
             os.remove(self._filename)
         except OSError as e:
-            Logger.error(f"SavedState: An error occurred while deleting the state file: {e}")
+            Logger.error(f"State: An error occurred while deleting the state file: {e}")
 
 
     def __repr__(self):
@@ -77,32 +109,33 @@ class SavedState:
         return yaml.dump(self._state)
 
 
-    def restore_state(self, max_age=None):
+    def restore_state(self, max_age=MAX_AGE):
         """Restore saved state.
         
-        :param max_age: maximum age of saved state in seconds. Defaults to None.
+        :param max_age: maximum age of saved state in seconds. Defaults to 
+          MAX_AGE.
         :type max_age: int
         """
         # Return if state file does not exist.
         if not os.path.isfile(self._filename):
-            Logger.info("SavedState: No saved state available.")
+            Logger.info("State: No saved state available.")
             return
             
         # Load state from YAML file.
         try:
             with open(self._filename, "r") as file:
-                Logger.info(f"SavedState: Loading saved state from file '{self._filename}'.")
+                Logger.info(f"State: Loading saved state from file '{self._filename}'.")
                 self._state = yaml.safe_load(file)
         except OSError as e:
-            Logger.error(f"SavedState: An error occurred while reading the state file: {e}")
+            Logger.error(f"State: An error occurred while reading the state file: {e}")
         except yaml.YAMLError as e:
-            Logger.error(f"SavedState: An error occurred while parsing the state file: {e}")
+            Logger.error(f"State: An error occurred while parsing the state file: {e}")
 
         # Only consider saved state if younger than max_age.
         if 'last_updated' in self._state and max_age is not None:
             last_updated = datetime.fromisoformat(self._state['last_updated'])
             if (datetime.now() - last_updated).total_seconds() > max_age:
-                Logger.info(f"SavedState: Saved state is older than {max_age} seconds and will be discarded.")
+                Logger.info(f"State: Saved state is older than {max_age} seconds and will be discarded.")
                 self._state = dict()
 
 
@@ -113,13 +146,13 @@ class SavedState:
         # Save state to YAML file.
         try:
             with open(self._filename, "w") as file:
-                Logger.debug(f"SavedState: Saving state to file '{self._filename}'.")
+                Logger.debug(f"State: Saving state to file '{self._filename}'.")
                 yaml.dump(self._state, file)
         except OSError as e:
-            Logger.error(f"SavedState: An error occurred while writing the state file: {e}")
+            Logger.error(f"State: An error occurred while writing the state file: {e}")
 
 
-    def update(self, state):
+    def _update_value(self, state):
         """ Update current state.
         
         Uses the dictionary update function to update the current state. This
@@ -134,7 +167,7 @@ class SavedState:
 
     
     @property
-    def display_state(self):
+    def _display_state(self):
         """Return current display state.
 
         :return: display state
@@ -143,18 +176,18 @@ class SavedState:
         return self._state.get('display_state')
 
 
-    @display_state.setter
-    def display_state(self, value):
-        """Set new display state.
+    @_display_state.setter
+    def _display_state(self, value):
+        """Set new display state and save it.
         
         :param value: display state
         :type value: str
         """
-        self.update({'display_state': value})
+        self._update_value({'display_state': value})
 
 
     @property
-    def play_state(self):
+    def _play_state(self):
         """Return current play state.
 
         :return: play state
@@ -163,18 +196,18 @@ class SavedState:
         return self._state.get('play_state')
 
 
-    @play_state.setter
-    def play_state(self, value):
-        """Set new play state.
+    @_play_state.setter
+    def _play_state(self, value):
+        """Set new play state and save it.
         
         :param value: play state
         :type value: str
         """
-        self.update({'play_state': value})
+        self._update_value({'play_state': value})
 
 
     @property
-    def slideshow(self):
+    def _slideshow(self):
         """Return current slideshow.
 
         :return: slideshow
@@ -183,14 +216,14 @@ class SavedState:
         return self._state.get('slideshow')
 
 
-    @slideshow.setter
-    def slideshow(self, value):
-        """Set new slideshow.
+    @_slideshow.setter
+    def _slideshow(self, value):
+        """Set new slideshow and save it.
         
         :param value: slideshow
         :type value: str
         """
-        self.update({'slideshow': value})
+        self._update_value({'slideshow': value})
 
 
     @property
@@ -205,7 +238,7 @@ class SavedState:
 
     @state.setter
     def state(self, value):
-        """Set new state.
+        """Set new state and save it.
         
         :param value: state
         :type value: dict
