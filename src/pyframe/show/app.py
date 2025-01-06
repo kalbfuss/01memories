@@ -123,7 +123,7 @@ class App(kivy.app.App, Controller):
         index = self._index
         # Exit application if no slideshow has been defined.
         if 'slideshows' not in config or type(config['slideshows']) is not dict:
-            raise ConfigError("Configuration: Exiting application as no slideshows have been defined.", config)
+            raise ConfigError("Config: Exiting application as no slideshows have been defined.", config)
 
         # Create empty dictionary to collect slideshows
         self._slideshows = dict()
@@ -258,7 +258,7 @@ class App(kivy.app.App, Controller):
             try:
                 self._scheduler = Scheduler(self._config['schedule'], self)
             except ConfigError as e:
-                raise ConfigError(f"Configuration: {e}", e.config)
+                raise ConfigError(f"Config: {e}", e.config)
             except Exception as e:
                 raise Exception(f"Scheduler: {e}")
         # Start playing first defined slideshow otherwise.

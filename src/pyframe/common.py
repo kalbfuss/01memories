@@ -177,7 +177,7 @@ def _create_repositories(config, index):
         # Skip disabled repositories.
         enabled_flag = rep_config.get('enabled', True)
         if enabled_flag is False or enabled_flag == "off":
-            logging.info(f"Configuration: Skipping repository '{uuid}' as it has been disabled.")
+            logging.info(f"Config: Skipping repository '{uuid}' as it has been disabled.")
             continue
 
         # Check parameters.
@@ -203,7 +203,7 @@ def _create_repositories(config, index):
 
         try:
             # Create repository instance.
-            logging.info(f"Configuration: Creating {rep_config2.get('type')} repository '{uuid}'.")
+            logging.info(f"Config: Creating {rep_config2.get('type')} repository '{uuid}'.")
             rep = rep_class(uuid, rep_config, index=index)
         # Catch any invalid configuration and UUID errors.
         except (ConfigError, UuidError) as e:
@@ -237,7 +237,7 @@ def _detect_display_commands(config):
     # Skip auto-detection if commands have been configured before (e.g. in
     # the configuration file).
     if config['display_on_command'] is not None or config['display_off_command'] is not None:
-        logging.debug(f"Configuration: Skipping detection of display commands as they are defined in the configuration file.")
+        logging.debug(f"Config: Skipping detection of display commands as they are defined in the configuration file.")
         return
 
     # Available system/command combinations. Extend as required.
@@ -252,7 +252,7 @@ def _detect_display_commands(config):
         }
     }
     
-    logging.debug(f"Configuration: Testing display commands.")
+    logging.debug(f"Config: Testing display commands.")
 
     # Iterate through system/command combinations.
     for system in display_commands:
@@ -264,17 +264,17 @@ def _detect_display_commands(config):
             config['display_on_command'] = display_commands[system]['on']
             config['display_off_command'] = display_commands[system]['off']
             
-            logging.info(f"Configuration: 'Display on' command for system '{system}' completed successfully.")
-            logging.debug(f"Configuration: Selecting the following commands for display control:")
-            logging.debug(f"Configuration:   display_on_command: {config['display_on_command']}")
-            logging.debug(f"Configuration:   display_off_command: {config['display_off_command']}")
+            logging.info(f"Config: 'Display on' command for system '{system}' completed successfully.")
+            logging.debug(f"Config: Selecting the following commands for display control:")
+            logging.debug(f"Config:   display_on_command: {config['display_on_command']}")
+            logging.debug(f"Config:   display_off_command: {config['display_off_command']}")
             
             return
         else:
-            logging.debug(f"Configuration: 'Display on' command for system '{system}' failed during testing.")
+            logging.debug(f"Config: 'Display on' command for system '{system}' failed during testing.")
 
     # Disable display commands if no viable commands have been detected.
-    logging.warning(f"Configuration: No viable display commands found for the system. Disabling display control.")
+    logging.warning(f"Config: No viable display commands found for the system. Disabling display control.")
     config['display_on_command'] = None
     config['display_off_command'] = None
             
@@ -302,7 +302,7 @@ def _load_config():
         if os.path.isfile(path): break
 
     # Load configuration from yaml file.
-    logging.info(f"Configuration: Loading configuration from file '{path}'.")
+    logging.info(f"Config: Loading configuration from file '{path}'.")
     with open(path, 'r', encoding='utf8') as config_file:
         config2 = yaml.safe_load(config_file)
 
@@ -313,7 +313,7 @@ def _load_config():
     # Detect display commands if necessary.
     _detect_display_commands(config)
 
-    logging.debug(f"Configuration: Configuration = {config}")
+    logging.debug(f"Config: Configuration = {config}")
     return config
 
 
