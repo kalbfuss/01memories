@@ -160,8 +160,8 @@ class RepositoryFile:
             orig_orientation = image.info.get('original_orientation', None)
             # Swap width and height if the image has been rotated by 90 or 270 
             # degrees.
-            logging.debug(f"original_orientation: {orig_orientation}")
             if orig_orientation in { 8, 6 }:
+                logging.debug(f"Image has been automatically rotated by pillow-heif. Swapping width and height of image. Original orientation: {orig_orientation}")
                 self._height, self._width = image.size
 
         # Open image file for reading (binary mode) and extract EXIF information.

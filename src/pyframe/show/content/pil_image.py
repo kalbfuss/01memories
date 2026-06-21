@@ -100,7 +100,9 @@ class SlideshowImage(LabeledContent):
         # rotated automatically according to EXIF information and the original
         # orientation is stored under the key 'original_orientation' in the info
         # attribute of the pillow image.
-        if not 'original_orientation' in pil_image.info:
+        if 'original_orientation' in pil_image.info:
+            Logger.debug("Image has been automatically rotated by pillow-heif. Skipping image rotation.")
+        else:
             # Rotate image as required.
             if self._rotation == 90:
                 pil_image = pil_image.transpose(PilImage.Transpose.ROTATE_270)
