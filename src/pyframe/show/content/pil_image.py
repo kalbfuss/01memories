@@ -11,6 +11,7 @@ from kivy.uix.image import Image
 from kivy.uix.scatter import Scatter
 
 from PIL import Image as PilImage
+from pillow_heif import HeifImagePlugin
 
 from .base import LabeledContent
 
@@ -94,13 +95,19 @@ class SlideshowImage(LabeledContent):
         pil_image = PilImage.open(self._file.source)
         #pil_image = pil_image.transpose(PilImage.Transpose.FLIP_TOP_BOTTOM)
 
-        # Rotate image as required.
-        if self._rotation == 90:
-            pil_image = pil_image.transpose(PilImage.Transpose.ROTATE_270)
-        elif self._rotation == 180:
-            pil_image = pil_image.transpose(PilImage.Transpose.ROTATE_180)
-        elif self._rotation == 270:
-            pil_image = pil_image.transpose(PilImage.Transpose.ROTATE_90)
+        # Rotate image according rotation information unlsess a HEIC file
+        # loaded with pillow-heif. Image files loaded with pillow-heif are 
+        # rotated automatically according to EXIF information and the original
+        # orientation is stored under the key 'original_orientation' in the info
+        # attribute of the pillow image.
+        if not 'original_orientation' in pil_image.info:
+            # Rotate image as required.
+            if self._rotation == 90:
+                pil_image = pil_image.transpose(PilImage.Transpose.ROTATE_270)
+            elif self._rotation == 180:
+                pil_image = pil_image.transpose(PilImage.Transpose.ROTATE_180)
+            elif self._rotation == 270:
+                pil_image = pil_image.transpose(PilImage.Transpose.ROTATE_90)
     
         # Determine aspect ratios of image slideshow widget (this widget)
         # and image.

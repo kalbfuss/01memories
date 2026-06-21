@@ -13,6 +13,10 @@ from geopy.exc import GeopyError
 from iptcinfo3 import IPTCInfo
 
 from PIL import Image
+from pillow_heif import HeifImagePlugin
+
+#from pillow_heif import register_heif_opener
+#register_heif_opener()  # Register HEIF opener to enable HEIC support in Pillow.
 
 
 # Global geolocator instance for reverse location lookups.
@@ -132,7 +136,7 @@ class RepositoryFile:
         return f"File=(uuid='{self.uuid}', rep=0x{id(self.rep):x}, name={self.name}, type={self.type}, width={self.width}, height={self.height}, rotation={self.rotation}, orientation={self.orientation}, creation_date='{self.creation_date}', description='{self.description}', rating={self.rating}, tags={self.tags})"
 
     # Extensions of supported files
-    EXT_IMAGE = ("*.jpg", "*.jpeg", "*.png")
+    EXT_IMAGE = ("*.jpg", "*.jpeg", "*.png", "*.heic", "*.gif")
     EXT_VIDEO = ("*.mp4", "*.mv4", "*.mov")
 
     def _extract_image_metadata(self, path):
