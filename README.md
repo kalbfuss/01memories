@@ -27,6 +27,7 @@ Digital Memories requires the following Python packages to be installed:
 - Kivy
 - paho-mqtt
 - pillow
+- pillow-heif
 - pyyaml
 - rclone-python
 - schedule
