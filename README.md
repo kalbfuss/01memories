@@ -350,7 +350,7 @@ The following parameters control the files included in a slideshow and the seque
 | Parameter            | Description                                                  |
 | :------------------- | :----------------------------------------------------------- |
 | repositories         | The repositories from which files shall be shown. The default is to show files from all repositories. |
-| orientation          | Valid orientations are *portrait* or *landscape*. The default is to include either orientation. |
+| orientation          | Valid orientations are *portrait*, *landscape* or *all*. The default is *all*.
 | types                | Supported file types are *images* and *videos*. May be a single value or list of values. The default is to include all file types. |
 | tags                 | File tags, which shall be included. May be a single value or list of values. The default is to include all tags **and** untagged files. If set, untagged files are excluded. |
 | excluded_tags        | File tags, which shall be excluded. May be a single value or list of values. The default is not to exclude any tags. |
