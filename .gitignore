@@ -1,4 +1,5 @@
 # 01memories specific exclusions
+/.vscode/
 /cache/
 /local/
 /logs/
