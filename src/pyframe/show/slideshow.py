@@ -88,10 +88,14 @@ class Slideshow(AnchorLayout):
 
         # Map orientation.
         if 'orientation' in config:
-            check_param('orientation', config, options={"landscape", "portrait"})
+            check_param('orientation', config, options={"landscape", "portrait", "all"})
             value = config['orientation']
-            map = {'landscape': RepositoryFile.ORIENTATION_LANDSCAPE, 'portrait': RepositoryFile.ORIENTATION_PORTRAIT}
-            self._criteria['orientation'] = map[value]
+            if value == "all":
+                del self._criteria['orientation']
+            else:
+                map = {'landscape': RepositoryFile.ORIENTATION_LANDSCAPE, 
+                    'portrait': RepositoryFile.ORIENTATION_PORTRAIT}
+                self._criteria['orientation'] = map[value]
 
         # Add always excluded tags.
         if 'always_excluded_tags' in config:
