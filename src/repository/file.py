@@ -155,6 +155,14 @@ class RepositoryFile:
         # Use PIL to determine image size.
         with Image.open(path) as image:
             self._width, self._height = image.size
+            # Check whether image has been automatically rotated by pillow-heif
+            # during loading.
+            orig_orientation = image.info.get('original_orientation', None)
+            # Swap width and height if the image has been rotated by 90 or 270 
+            # degrees.
+            logging.debug(f"original_orientation: {orig_orientation}")
+            if orig_orientation in { 8, 6 }:
+                self._height, self._width = image.size
 
         # Open image file for reading (binary mode) and extract EXIF information.
         with open(path, 'rb') as file:
